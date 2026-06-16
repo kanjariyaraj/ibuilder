@@ -1,30 +1,18 @@
-# Build Engine Architecture
+# Build Engine
 
-## Components
+The Builder Build Engine (`internal/build`) is the core orchestrator for remote iOS compilation.
 
-### `internal/build/`
+## How It Works
 
-| File | Responsibility |
-|------|---------------|
-| `runner.go` | Main build flow: validate, dispatch, orchestrate |
-| `tracker.go` | Wait for build completion with status polling |
-| `download.go` | Download artifacts, download-only mode |
-| `report.go` | Generate build reports (JSON + Markdown) |
-
-### Build Flow
-
-```
-builder ios build
-  → Validate auth, repo, workflow
-  → Dispatch workflow_dispatch event
-  → (optional) Poll status every 10s
-  → (on success) Download artifact to dist/
-  → Generate build-report.json and build-report.md
-```
+1. **Workflow Dispatch**: The engine uses the GitHub REST API to trigger specialized workflows located in `.github/workflows/`.
+2. **Dynamic Inputs**: It passes project-specific parameters (scheme, configuration, build mode) as workflow inputs.
+3. **Real-time Monitoring**: Once triggered, the engine polls the GitHub API to monitor the build's progress.
+4. **Log Streaming**: It retrieves and displays logs from the remote runner in real-time, providing a "local-feel" experience.
+5. **Artifact Retrieval**: Upon successful completion, the engine automatically downloads the resulting `.ipa` files and build reports.
 
 ## Configuration
 
-Build settings read from `builder.json`:
+Build settings are managed in `builder.json` under the `build` and `ios` keys.
 
 ```json
 {
@@ -32,9 +20,14 @@ Build settings read from `builder.json`:
     "workflow_id": "ios-build.yml",
     "branch": "main",
     "scheme": "MyApp",
-    "build_mode": "release"
+    "configuration": "Release"
   }
 }
 ```
 
-CLI flags override config values.
+## Commands
+
+- `builder build run`: Start a new remote build.
+- `builder build status`: Check the status of the current or most recent build.
+- `builder build log`: View logs from the remote runner.
+- `builder build artifacts`: List and download build outputs.

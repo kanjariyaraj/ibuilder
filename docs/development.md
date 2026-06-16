@@ -12,19 +12,44 @@ cd Builder
 go mod tidy
 ```
 
-## Build
+## Using the Makefile
+
+This project includes a `Makefile` for streamlined development tasks.
+
+```bash
+# Build the project
+make build
+
+# Run all tests
+make test
+
+# Run tests with coverage
+make test-coverage
+
+# Run linters
+make lint
+
+# Run all checks (lint, test, build)
+make all
+```
+
+## Manual Commands
+
+If you prefer not to use `make`, you can run the Go commands directly:
+
+### Build
 
 ```bash
 go build -o builder ./cmd/builder/
 ```
 
-## Test
+### Test
 
 ```bash
 go test ./... -v
 ```
 
-## Lint
+### Lint
 
 ```bash
 go vet ./...

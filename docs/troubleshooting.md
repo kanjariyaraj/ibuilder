@@ -1,34 +1,39 @@
-# Troubleshooting Guide
+# Troubleshooting
 
-## AI Troubleshooter
+This guide provides solutions to common issues encountered when using Builder.
 
-### "No logs available"
-Run a build first: `builder build` or `builder rn dev`
+## 1. Authentication Issues
 
-### False positives
-Adjust confidence threshold in builder.json:
-```json
-"ai": {
-  "confidence_threshold": 0.9
-}
+### "Not authenticated with GitHub"
+- **Cause**: Your session has expired or you haven't logged in yet.
+- **Fix**: Run `builder auth github` and follow the device flow instructions.
+
+### "Permission denied (publickey)"
+- **Cause**: The remote repository requires SSH keys that are not configured on the remote runner.
+- **Fix**: Ensure your GitHub Token has the `repo` scope or use HTTPS URLs for your repository.
+
+## 2. Build Failures
+
+### Code Signing Errors
+- **Cause**: Missing or invalid Provisioning Profiles or Certificates.
+- **Fix**: Check your `builder.json` signing section. Use `builder doctor` to verify your local configuration.
+
+### "Scheme not found"
+- **Cause**: The specified Xcode scheme is not shared or does not exist.
+- **Fix**: In Xcode, go to **Product > Scheme > Manage Schemes** and ensure the "Shared" checkbox is checked for your target scheme.
+
+## 3. MobAI Connectivity
+
+### "Connection timed out"
+- **Cause**: The remote agent is not reachable or the port is blocked.
+- **Fix**: Verify the `host` and `port` in `builder.json`. Ensure your firewall allows TCP traffic on the specified port.
+
+## 🧠 Using the AI Doctor
+
+If you're stuck, use the built-in AI diagnostics:
+
+```bash
+builder ai fix
 ```
 
-### Reports not generating
-Check `.build/reports/ai/` directory exists and is writable.
-
-## TestFlight
-
-### Upload fails
-Check:
-1. IPA file exists in `.build/` directory
-2. IPA file is valid (non-empty, correct format)
-3. App Store Connect credentials are configured
-
-### Status shows "PENDING"
-Builds take time to process. Check back later with:
-```
-builder testflight status
-```
-
-### Groups not showing
-Ensure TestFlight is enabled for your App Store Connect account.
+The AI Doctor will scan your logs and configuration to provide a precise solution tailored to your environment.

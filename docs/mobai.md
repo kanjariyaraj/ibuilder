@@ -1,48 +1,38 @@
-# MobAI Device Integration
+# MobAI Protocol
+
+MobAI is a specialized, high-performance interaction layer designed for remote iOS device management and debugging.
 
 ## Overview
 
-MobAI enables real iPhone device management from the CLI. Connect, manage, and debug iOS devices remotely.
+MobAI solves the problem of interacting with physical iOS devices or simulators that are not locally connected. It establishes a secure TCP tunnel between the Builder CLI and a remote "Agent" running on a macOS machine.
 
-## Commands
+## Key Features
 
-### `builder mobai connect`
+- **Remote Hot Reload**: Seamlessly inject code changes into a running Flutter or React Native app on a remote device.
+- **Device Diagnostics**: Retrieve real-time battery levels, storage status, and OS information from remote hardware.
+- **Log Forwarding**: Stream system and application logs from the remote device directly to your local terminal.
+- **Connection Persistence**: Automatic reconnection logic handles network fluctuations without interrupting your session.
 
-Connect to a MobAI device:
+## Architecture
 
-```bash
-builder mobai connect
-builder mobai connect --host 192.168.1.100 --port 12345 --device "iPhone 15"
-```
+The MobAI client (`internal/mobai`) manages the lifecycle of the connection:
 
-### `builder mobai disconnect`
+1. **Discovery**: Identifies available remote agents.
+2. **Handshake**: Establishes a secure session and verifies protocol versions.
+3. **Heartbeat**: Maintains the connection and monitors latency.
+4. **Data Transfer**: Handles the bidirectional flow of debugging commands and device data.
 
-Disconnect from the current device.
+## Usage
 
-### `builder mobai status`
-
-Display connection status, device info, and latency.
-
-### `builder mobai doctor`
-
-Run health checks: configuration, connectivity, device availability.
-
-### `builder mobai ping`
-
-Ping the device and measure latency.
-
-## Configuration
-
-MobAI settings in `builder.json`:
+Enable MobAI in your `builder.json`:
 
 ```json
 {
   "mobai": {
-    "host": "",
-    "port": 0,
-    "device": "",
-    "auto_reconnect": true,
-    "connection_timeout": 30
+    "host": "remote-mac.local",
+    "port": 12345,
+    "device": "iPhone 15 Pro",
+    "auto_reconnect": true
   }
 }
 ```
