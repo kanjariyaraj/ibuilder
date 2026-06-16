@@ -1,5 +1,5 @@
 # Binaries
-builder
+/builder
 *.exe
 *.test
 

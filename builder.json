@@ -1,6 +1,14 @@
 {
   "project_name": "Builder",
   "repository": "https://github.com/kanjariyaraj/Builder.git",
+  "repo": {
+    "owner": "",
+    "name": "",
+    "branch": "main"
+  },
+  "github": {
+    "authenticated": false
+  },
   "ios": {
     "minimum_version": "15.0",
     "target_version": "17.0",

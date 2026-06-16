@@ -35,9 +35,21 @@ type ReactNativeSettings struct {
 	Entry   string `json:"entry_file"`
 }
 
+type RepoConfig struct {
+	Owner  string `json:"owner"`
+	Name   string `json:"name"`
+	Branch string `json:"branch"`
+}
+
+type GitHubConfig struct {
+	Authenticated bool `json:"authenticated"`
+}
+
 type Config struct {
 	ProjectName     string              `json:"project_name"`
 	Repository      string              `json:"repository"`
+	Repo            RepoConfig          `json:"repo"`
+	GitHub          GitHubConfig        `json:"github"`
 	IOS             iOSSettings         `json:"ios"`
 	Signing         SigningSettings     `json:"signing"`
 	MobAI           MobAISettings       `json:"mob_ai"`
@@ -49,6 +61,14 @@ func Default() *Config {
 	return &Config{
 		ProjectName: "Builder",
 		Repository:  "",
+		Repo: RepoConfig{
+			Owner:  "",
+			Name:   "",
+			Branch: "main",
+		},
+		GitHub: GitHubConfig{
+			Authenticated: false,
+		},
 		IOS: iOSSettings{
 			MinimumVersion: "15.0",
 			TargetVersion:  "17.0",
@@ -115,6 +135,9 @@ func Validate(cfg *Config) []error {
 	}
 	if len(cfg.IOS.Devices) == 0 {
 		errs = append(errs, errors.New(errors.KindValidation, "ios.devices must have at least one device"))
+	}
+	if cfg.Repo.Branch == "" {
+		errs = append(errs, errors.New(errors.KindValidation, "repo.branch is required"))
 	}
 	return errs
 }

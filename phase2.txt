@@ -1,7 +1,7 @@
 PROJECT: Builder
 
 Repository:
-https://github.com/kanjariyaraj/Builder.git
+https://github.com/kanjariyaraj/ibuilder.git
 
 ==================================================
 PHASE 2

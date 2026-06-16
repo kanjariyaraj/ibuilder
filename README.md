@@ -30,14 +30,20 @@ go build -o builder ./cmd/builder/
 | `builder config show` | Display configuration          |
 | `builder config validate` | Validate configuration     |
 | `builder --help` | Display help information             |
+| `builder auth github` | Authenticate with GitHub via device flow |
+| `builder auth status` | Check GitHub authentication status |
+| `builder auth logout` | Remove GitHub authentication |
+| `builder repo connect` | Connect repository from git remote |
+| `builder repo info` | Display repository metadata |
+| `builder repo validate` | Validate repository access |
 
 ## Roadmap
 
-- **Phase 1** — Foundation & CLI framework (current)
-- **Phase 2** — iOS build pipeline integration
-- **Phase 3** — Signing & code signing management
-- **Phase 4** — Release automation & GitHub integration
-- **Phase 5** — Multi-platform support & testing
+- **Phase 1** — Foundation & CLI framework (completed)
+- **Phase 2** — GitHub authentication & repository management (current)
+- **Phase 3** — iOS build pipeline integration
+- **Phase 4** — Signing & code signing management
+- **Phase 5** — Release automation & GitHub integration
 
 ## Contributing
 

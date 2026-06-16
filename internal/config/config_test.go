@@ -23,6 +23,12 @@ func TestDefault(t *testing.T) {
 	if cfg.ReactNative.Entry != "index.js" {
 		t.Errorf("expected 'index.js', got '%s'", cfg.ReactNative.Entry)
 	}
+	if cfg.Repo.Branch != "main" {
+		t.Errorf("expected 'main', got '%s'", cfg.Repo.Branch)
+	}
+	if cfg.GitHub.Authenticated {
+		t.Errorf("expected Authenticated to be false")
+	}
 }
 
 func TestSaveAndLoad(t *testing.T) {
@@ -32,6 +38,9 @@ func TestSaveAndLoad(t *testing.T) {
 	cfg := Default()
 	cfg.ProjectName = "TestProject"
 	cfg.Repository = "https://example.com/repo.git"
+	cfg.Repo.Owner = "testowner"
+	cfg.Repo.Name = "testrepo"
+	cfg.GitHub.Authenticated = true
 
 	if err := Save(path, cfg); err != nil {
 		t.Fatalf("failed to save config: %v", err)
@@ -47,6 +56,15 @@ func TestSaveAndLoad(t *testing.T) {
 	}
 	if loaded.Repository != "https://example.com/repo.git" {
 		t.Errorf("expected 'https://example.com/repo.git', got '%s'", loaded.Repository)
+	}
+	if loaded.Repo.Owner != "testowner" {
+		t.Errorf("expected 'testowner', got '%s'", loaded.Repo.Owner)
+	}
+	if loaded.Repo.Name != "testrepo" {
+		t.Errorf("expected 'testrepo', got '%s'", loaded.Repo.Name)
+	}
+	if !loaded.GitHub.Authenticated {
+		t.Errorf("expected Authenticated to be true")
 	}
 }
 
@@ -106,5 +124,20 @@ func TestValidateEmptyDevices(t *testing.T) {
 	}
 	if !hasDeviceError {
 		t.Errorf("expected validation error for empty devices")
+	}
+}
+
+func TestValidateEmptyBranch(t *testing.T) {
+	cfg := Default()
+	cfg.Repo.Branch = ""
+	errs := Validate(cfg)
+	hasBranchError := false
+	for _, e := range errs {
+		if e.Error() == "validation: repo.branch is required" {
+			hasBranchError = true
+		}
+	}
+	if !hasBranchError {
+		t.Errorf("expected validation error for empty branch")
 	}
 }
