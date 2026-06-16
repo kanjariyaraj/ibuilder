@@ -49,6 +49,11 @@
   },
   "react_native": {
     "enabled": false,
-    "entry_file": "index.js"
+    "entry_file": "index.js",
+    "metro_port": 8081,
+    "auto_start_metro": true,
+    "auto_attach": true,
+    "auto_install": true,
+    "fast_refresh": true
   }
 }

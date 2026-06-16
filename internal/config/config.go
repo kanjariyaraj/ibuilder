@@ -44,8 +44,13 @@ type FlutterSettings struct {
 }
 
 type ReactNativeSettings struct {
-	Enabled bool   `json:"enabled"`
-	Entry   string `json:"entry_file"`
+	Enabled        bool   `json:"enabled"`
+	Entry          string `json:"entry_file"`
+	MetroPort      int    `json:"metro_port"`
+	AutoStartMetro bool   `json:"auto_start_metro"`
+	AutoAttach     bool   `json:"auto_attach"`
+	AutoInstall    bool   `json:"auto_install"`
+	FastRefresh    bool   `json:"fast_refresh"`
 }
 
 type RepoConfig struct {
@@ -127,8 +132,13 @@ func Default() *Config {
 			AutoInstall: true,
 		},
 		ReactNative: ReactNativeSettings{
-			Enabled: false,
-			Entry:   "index.js",
+			Enabled:        false,
+			Entry:          "index.js",
+			MetroPort:      8081,
+			AutoStartMetro: true,
+			AutoAttach:     true,
+			AutoInstall:    true,
+			FastRefresh:    true,
 		},
 	}
 }
