@@ -31,6 +31,13 @@
     "enabled": false,
     "api_key": ""
   },
+  "mobai": {
+    "host": "",
+    "port": 0,
+    "device": "",
+    "auto_reconnect": true,
+    "connection_timeout": 30
+  },
   "flutter": {
     "enabled": false,
     "channel": "stable"

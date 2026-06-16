@@ -25,6 +25,14 @@ type MobAISettings struct {
 	APIKey  string `json:"api_key"`
 }
 
+type MobaiSettings struct {
+	Host              string `json:"host"`
+	Port              int    `json:"port"`
+	Device            string `json:"device"`
+	AutoReconnect     bool   `json:"auto_reconnect"`
+	ConnectionTimeout int    `json:"connection_timeout"`
+}
+
 type FlutterSettings struct {
 	Enabled bool   `json:"enabled"`
 	Channel string `json:"channel"`
@@ -63,6 +71,7 @@ type Config struct {
 	IOS             iOSSettings         `json:"ios"`
 	Signing         SigningSettings     `json:"signing"`
 	MobAI           MobAISettings       `json:"mob_ai"`
+	Mobai           MobaiSettings       `json:"mobai"`
 	Flutter         FlutterSettings     `json:"flutter"`
 	ReactNative     ReactNativeSettings `json:"react_native"`
 }
@@ -95,6 +104,13 @@ func Default() *Config {
 		Signing: SigningSettings{},
 		MobAI: MobAISettings{
 			Enabled: false,
+		},
+		Mobai: MobaiSettings{
+			Host:              "",
+			Port:              0,
+			Device:            "",
+			AutoReconnect:     true,
+			ConnectionTimeout: 30,
 		},
 		Flutter: FlutterSettings{
 			Enabled: false,
