@@ -1,0 +1,598 @@
+PROJECT: iBuilder
+
+Repository:
+https://github.com/kanjariyaraj/iBuilder.git
+
+==================================================
+PHASE 12
+TESTFLIGHT & RELEASE MANAGEMENT
+==================================================
+
+MISSION
+
+Transform iBuilder into a complete release platform.
+
+Goal:
+
+Allow developers to:
+
+Upload IPA
+
+Manage TestFlight
+
+Generate release notes
+
+Manage beta groups
+
+Track releases
+
+Prepare App Store submissions
+
+Release from Windows/Linux/WSL
+
+==================================================
+PRE-IMPLEMENTATION
+==================================================
+
+Before coding:
+
+1. Pull latest repository.
+2. Read all reports.
+3. Read all architecture docs.
+4. Read build engine.
+5. Read signing engine.
+6. Read artifact manager.
+7. Read AI engine.
+8. Verify tests pass.
+9. Verify build passes.
+10. Create implementation plan.
+
+Never start coding immediately.
+
+Workflow:
+
+ANALYZE
+→ PLAN
+→ TODO
+→ IMPLEMENT
+→ TEST
+→ FIX
+→ RETEST
+→ DOCUMENT
+→ REPORT
+→ COMMIT
+→ PUSH
+
+==================================================
+GOAL
+==================================================
+
+Implement release management.
+
+Users should:
+
+Upload builds
+
+Manage releases
+
+Manage beta testing
+
+Generate release notes
+
+Track release history
+
+==================================================
+COMMANDS
+==================================================
+
+ibuilder testflight upload
+
+ibuilder testflight status
+
+ibuilder testflight groups
+
+ibuilder testflight builds
+
+ibuilder testflight testers
+
+ibuilder release notes
+
+ibuilder release history
+
+ibuilder release prepare
+
+==================================================
+TESTFLIGHT UPLOAD
+==================================================
+
+Command:
+
+ibuilder testflight upload
+
+Support:
+
+Latest IPA
+
+Specific IPA
+
+Specific build
+
+Validate before upload
+
+Track upload progress
+
+Display processing status
+
+==================================================
+TESTFLIGHT STATUS
+==================================================
+
+Command:
+
+ibuilder testflight status
+
+Display:
+
+Upload state
+
+Processing state
+
+Beta state
+
+Review state
+
+Availability
+
+==================================================
+TESTFLIGHT GROUPS
+==================================================
+
+Command:
+
+ibuilder testflight groups
+
+Display:
+
+Group name
+
+Tester count
+
+Build assignments
+
+Support:
+
+List
+
+Inspect
+
+Future management support
+
+==================================================
+TESTFLIGHT BUILDS
+==================================================
+
+Command:
+
+ibuilder testflight builds
+
+Display:
+
+Build number
+
+Version
+
+Upload date
+
+Status
+
+Processing result
+
+==================================================
+TESTFLIGHT TESTERS
+==================================================
+
+Command:
+
+ibuilder testflight testers
+
+Display:
+
+Internal testers
+
+External testers
+
+Groups
+
+Assignments
+
+==================================================
+RELEASE NOTES
+==================================================
+
+Command:
+
+ibuilder release notes
+
+Generate from:
+
+Git commits
+
+Pull requests
+
+Build history
+
+Tags
+
+Output:
+
+Markdown
+
+JSON
+
+HTML
+
+==================================================
+AI RELEASE NOTES
+==================================================
+
+Integrate AI module.
+
+Generate:
+
+Summary
+
+Features
+
+Fixes
+
+Breaking changes
+
+Upgrade notes
+
+==================================================
+RELEASE HISTORY
+==================================================
+
+Command:
+
+ibuilder release history
+
+Display:
+
+Version
+
+Date
+
+Build
+
+Release notes
+
+Status
+
+==================================================
+RELEASE PREPARE
+==================================================
+
+Command:
+
+ibuilder release prepare
+
+Validate:
+
+Signing
+
+Build
+
+IPA
+
+Metadata
+
+Release notes
+
+Git state
+
+==================================================
+APP STORE CONNECT
+==================================================
+
+Prepare architecture for:
+
+Future metadata upload
+
+Future screenshot upload
+
+Future app submission
+
+Future review tracking
+
+==================================================
+CONFIGURATION
+==================================================
+
+Update:
+
+builder.json
+
+Add:
+
+{
+  "release": {
+    "auto_notes": true,
+    "default_group": "",
+    "validate_before_upload": true
+  }
+}
+
+==================================================
+PACKAGE STRUCTURE
+==================================================
+
+Create:
+
+internal/release/
+
+Files:
+
+upload.go
+
+status.go
+
+groups.go
+
+builds.go
+
+testers.go
+
+notes.go
+
+history.go
+
+prepare.go
+
+==================================================
+SECURITY
+==================================================
+
+Never expose:
+
+API keys
+
+Secrets
+
+Tokens
+
+Credentials
+
+Mask sensitive data.
+
+==================================================
+ERROR HANDLING
+==================================================
+
+Handle:
+
+Invalid IPA
+
+Upload failure
+
+API failure
+
+Authentication failure
+
+Rate limits
+
+Metadata issues
+
+Processing failures
+
+==================================================
+LOGGING
+==================================================
+
+Log:
+
+Uploads
+
+Status checks
+
+Release generation
+
+History operations
+
+Failures
+
+Retries
+
+==================================================
+UNIT TESTS
+==================================================
+
+Test:
+
+Release notes
+
+Upload validation
+
+History
+
+Status parsing
+
+Metadata generation
+
+==================================================
+INTEGRATION TESTS
+==================================================
+
+Mock:
+
+App Store Connect
+
+TestFlight
+
+Build uploads
+
+Release history
+
+==================================================
+PERFORMANCE TESTS
+==================================================
+
+Test:
+
+Large release histories
+
+Large notes generation
+
+Repeated uploads
+
+==================================================
+TEST EXECUTION RULE
+==================================================
+
+Run tests.
+
+Fix failures.
+
+Run tests again.
+
+Run lint.
+
+Fix lint.
+
+Run lint again.
+
+Build project.
+
+Verify build.
+
+Build project again.
+
+Testing must happen TWICE.
+
+==================================================
+DOCUMENTATION
+==================================================
+
+Create:
+
+docs/testflight.md
+
+docs/releases.md
+
+docs/release-notes.md
+
+docs/beta-testing.md
+
+Update README.
+
+==================================================
+REPORTS
+==================================================
+
+Generate:
+
+reports/phase12-report.md
+
+reports/phase12-testing.md
+
+reports/phase12-bugs.md
+
+reports/phase12-summary.md
+
+==================================================
+QUALITY RULES
+==================================================
+
+Requirements:
+
+SOLID
+
+Clean Architecture
+
+Safe uploads
+
+Production ready
+
+Reusable modules
+
+==================================================
+FINAL VERIFICATION
+==================================================
+
+Verify:
+
+ibuilder testflight upload
+
+ibuilder testflight status
+
+ibuilder testflight groups
+
+ibuilder testflight builds
+
+ibuilder testflight testers
+
+ibuilder release notes
+
+ibuilder release history
+
+ibuilder release prepare
+
+Verify:
+
+Upload flow
+
+Release notes
+
+History
+
+Status reporting
+
+==================================================
+COMMIT
+==================================================
+
+Create detailed commit.
+
+Example:
+
+feat(release): add testflight upload and release management system
+
+==================================================
+PUSH
+==================================================
+
+git add .
+
+git commit
+
+git push origin main
+
+Only push when:
+
+✓ tests pass
+✓ build passes
+✓ lint passes
+✓ docs updated
+✓ reports generated
+
+==================================================
+PHASE COMPLETION
+==================================================
+
+Create:
+
+reports/phase12-completion.md
+
+Include:
+
+Completed work
+
+Pending work
+
+Known limitations
+
+Recommendations for Phase 13
+
+Then commit and push.
+
+END PHASE 12

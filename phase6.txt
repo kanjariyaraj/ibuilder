@@ -1,0 +1,532 @@
+PROJECT: iBuilder
+
+Repository:
+https://github.com/kanjariyaraj/iBuilder.git
+
+==================================================
+PHASE 6
+IOS SIGNING MANAGEMENT SYSTEM
+==================================================
+
+CRITICAL PHASE
+
+This phase implements certificate and provisioning
+profile management.
+
+Goal:
+
+Allow developers to configure, validate and manage
+iOS signing without manually editing GitHub workflows.
+
+==================================================
+PREPARATION
+==================================================
+
+Before coding:
+
+1. Pull latest repository.
+2. Read all previous phase reports.
+3. Read README.
+4. Read docs.
+5. Review build engine.
+6. Review workflow templates.
+7. Verify tests pass.
+8. Verify build passes.
+9. Create implementation plan.
+10. Create TODO list.
+
+Never start coding immediately.
+
+Workflow:
+
+ANALYZE
+→ PLAN
+→ TODO
+→ IMPLEMENT
+→ TEST
+→ FIX
+→ RETEST
+→ DOCUMENT
+→ REPORT
+→ COMMIT
+→ PUSH
+
+==================================================
+GOAL
+==================================================
+
+Implement complete signing management.
+
+Users should be able to:
+
+Upload certificates
+
+Upload provisioning profiles
+
+Validate signing
+
+Verify expiration
+
+Manage secrets
+
+Diagnose signing issues
+
+==================================================
+COMMANDS
+==================================================
+
+ibuilder signing setup
+
+ibuilder signing validate
+
+ibuilder signing doctor
+
+ibuilder signing status
+
+ibuilder signing remove
+
+ibuilder signing sync
+
+ibuilder signing export
+
+==================================================
+SIGNING FLOW
+==================================================
+
+1. User runs setup.
+2. Select certificate.
+3. Select provisioning profile.
+4. Enter password.
+5. Validate files.
+6. Encode securely.
+7. Upload GitHub secrets.
+8. Update config.
+9. Verify installation.
+10. Generate report.
+
+==================================================
+SUPPORTED FILES
+==================================================
+
+Certificates:
+
+.p12
+
+.pfx
+
+Provisioning Profiles:
+
+.mobileprovision
+
+==================================================
+GITHUB SECRETS
+==================================================
+
+Automatically create:
+
+IOS_CERT_BASE64
+
+IOS_CERT_PASSWORD
+
+IOS_PROFILE_BASE64
+
+IOS_TEAM_ID
+
+IOS_BUNDLE_ID
+
+==================================================
+SIGNING VALIDATION
+==================================================
+
+Validate:
+
+Certificate exists
+
+Certificate readable
+
+Password valid
+
+Provision profile valid
+
+Expiration dates
+
+Bundle identifier match
+
+Team ID match
+
+==================================================
+SIGNING DOCTOR
+==================================================
+
+Command:
+
+ibuilder signing doctor
+
+Checks:
+
+Missing certificate
+
+Expired certificate
+
+Expired profile
+
+Bundle mismatch
+
+Team mismatch
+
+Workflow mismatch
+
+Secrets missing
+
+==================================================
+SIGNING STATUS
+==================================================
+
+Command:
+
+ibuilder signing status
+
+Output:
+
+Certificate status
+
+Expiration date
+
+Provision profile status
+
+GitHub secret status
+
+Overall health
+
+==================================================
+SECRET MANAGEMENT
+==================================================
+
+Implement:
+
+Secure upload
+
+Secure validation
+
+Secret masking
+
+Secret verification
+
+Never print secrets.
+
+==================================================
+CONFIG UPDATES
+==================================================
+
+Update:
+
+builder.json
+
+Add:
+
+{
+  "signing": {
+    "team_id": "",
+    "bundle_id": "",
+    "certificate_secret": "IOS_CERT_BASE64",
+    "profile_secret": "IOS_PROFILE_BASE64"
+  }
+}
+
+==================================================
+PACKAGE STRUCTURE
+==================================================
+
+Create:
+
+internal/signing/
+
+Files:
+
+setup.go
+
+validate.go
+
+doctor.go
+
+status.go
+
+sync.go
+
+secrets.go
+
+profile.go
+
+certificate.go
+
+==================================================
+WORKFLOW INTEGRATION
+==================================================
+
+Update generated workflows.
+
+Automatically consume:
+
+IOS_CERT_BASE64
+
+IOS_CERT_PASSWORD
+
+IOS_PROFILE_BASE64
+
+IOS_TEAM_ID
+
+Support all workflow templates.
+
+==================================================
+ERROR HANDLING
+==================================================
+
+Handle:
+
+Missing file
+
+Invalid certificate
+
+Wrong password
+
+Corrupt profile
+
+Expired profile
+
+GitHub API errors
+
+Permission issues
+
+==================================================
+LOGGING
+==================================================
+
+Log:
+
+Setup
+
+Validation
+
+Uploads
+
+Verification
+
+Warnings
+
+Failures
+
+Debug mode support
+
+==================================================
+SECURITY RULES
+==================================================
+
+Never expose:
+
+Passwords
+
+Certificates
+
+Tokens
+
+Secrets
+
+Private keys
+
+Mask all sensitive values.
+
+Secure temporary file handling required.
+
+==================================================
+UNIT TESTS
+==================================================
+
+Test:
+
+Validation
+
+Encoding
+
+Secret generation
+
+Config updates
+
+Error handling
+
+==================================================
+INTEGRATION TESTS
+==================================================
+
+Mock:
+
+GitHub Secrets API
+
+Certificate uploads
+
+Provision profile uploads
+
+Validation flow
+
+==================================================
+TEST EXECUTION RULE
+==================================================
+
+Run tests.
+
+Fix failures.
+
+Run tests again.
+
+Run lint.
+
+Fix lint.
+
+Run lint again.
+
+Build project.
+
+Verify build.
+
+Build project again.
+
+Testing must happen TWICE.
+
+==================================================
+DOCUMENTATION
+==================================================
+
+Create:
+
+docs/signing.md
+
+docs/certificates.md
+
+docs/provisioning-profiles.md
+
+docs/signing-troubleshooting.md
+
+Update README.
+
+Add setup examples.
+
+==================================================
+REPORTS
+==================================================
+
+Generate:
+
+reports/phase6-report.md
+
+reports/phase6-testing.md
+
+reports/phase6-bugs.md
+
+reports/phase6-summary.md
+
+Include:
+
+Files created
+
+Architecture decisions
+
+Tests executed
+
+Issues fixed
+
+Future improvements
+
+==================================================
+QUALITY RULES
+==================================================
+
+Requirements:
+
+SOLID
+
+Clean Architecture
+
+Reusable modules
+
+Security first
+
+Production ready
+
+No hacks
+
+No dead code
+
+==================================================
+FINAL VERIFICATION
+==================================================
+
+Verify:
+
+ibuilder signing setup
+
+ibuilder signing validate
+
+ibuilder signing doctor
+
+ibuilder signing status
+
+ibuilder signing sync
+
+Verify:
+
+Secrets uploaded
+
+Validation works
+
+Doctor works
+
+Workflow integration works
+
+==================================================
+COMMIT
+==================================================
+
+Create detailed commit.
+
+Example:
+
+feat(signing): add certificate and provisioning profile management system
+
+==================================================
+PUSH
+==================================================
+
+git add .
+
+git commit
+
+git push origin main
+
+Only push when:
+
+✓ tests pass
+✓ build passes
+✓ lint passes
+✓ docs updated
+✓ reports generated
+
+==================================================
+PHASE COMPLETION
+==================================================
+
+Create:
+
+reports/phase6-completion.md
+
+Include:
+
+Completed work
+
+Pending work
+
+Known limitations
+
+Recommendations for Phase 7
+
+Then commit and push.
+
+END PHASE 6

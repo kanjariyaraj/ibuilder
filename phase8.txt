@@ -1,0 +1,649 @@
+PROJECT: iBuilder
+
+Repository:
+https://github.com/kanjariyaraj/iBuilder.git
+
+==================================================
+PHASE 8
+MOBAI DEVICE INTEGRATION & REAL DEVICE MANAGEMENT
+==================================================
+
+MISSION
+
+Transform iBuilder from a remote build tool
+into a real iPhone development platform.
+
+Users should be able to:
+
+Connect devices
+
+Manage devices
+
+Monitor devices
+
+View logs
+
+Capture screenshots
+
+Install builds
+
+Launch applications
+
+Debug applications
+
+==================================================
+PRE-IMPLEMENTATION
+==================================================
+
+Before coding:
+
+1. Pull latest repository.
+2. Read all previous phase reports.
+3. Read docs.
+4. Read build engine.
+5. Read signing system.
+6. Read artifact system.
+7. Verify build passes.
+8. Verify tests pass.
+9. Create implementation plan.
+10. Create risk assessment.
+
+Never start coding immediately.
+
+Workflow:
+
+ANALYZE
+→ PLAN
+→ TODO
+→ IMPLEMENT
+→ TEST
+→ FIX
+→ RETEST
+→ DOCUMENT
+→ REPORT
+→ COMMIT
+→ PUSH
+
+==================================================
+GOAL
+==================================================
+
+Implement complete MobAI integration.
+
+Users should manage real iPhones remotely.
+
+==================================================
+COMMANDS
+==================================================
+
+ibuilder mobai connect
+
+ibuilder mobai disconnect
+
+ibuilder mobai status
+
+ibuilder mobai doctor
+
+ibuilder mobai ping
+
+ibuilder device list
+
+ibuilder device info
+
+ibuilder device logs
+
+ibuilder device screenshot
+
+ibuilder device install
+
+ibuilder device launch
+
+==================================================
+MOBAI CONNECTION
+==================================================
+
+Command:
+
+ibuilder mobai connect
+
+Requirements:
+
+Connection wizard
+
+Auto detection
+
+Manual configuration
+
+Config validation
+
+Connection testing
+
+Store settings in:
+
+builder.json
+
+==================================================
+CONFIG STRUCTURE
+==================================================
+
+Update:
+
+builder.json
+
+Add:
+
+{
+  "mobai": {
+    "host": "",
+    "port": 0,
+    "device": "",
+    "auto_reconnect": true,
+    "connection_timeout": 30
+  }
+}
+
+==================================================
+MOBAI STATUS
+==================================================
+
+Command:
+
+ibuilder mobai status
+
+Display:
+
+Connected
+
+Disconnected
+
+Device name
+
+Device type
+
+Device OS
+
+Connection latency
+
+Health status
+
+==================================================
+MOBAI DOCTOR
+==================================================
+
+Command:
+
+ibuilder mobai doctor
+
+Checks:
+
+Connectivity
+
+Port accessibility
+
+Configuration
+
+Authentication
+
+Device availability
+
+Required services
+
+Output:
+
+Healthy
+
+Warning
+
+Failure
+
+Fix suggestions
+
+==================================================
+DEVICE DISCOVERY
+==================================================
+
+Command:
+
+ibuilder device list
+
+Display:
+
+Device name
+
+Model
+
+iOS version
+
+Connection state
+
+Battery status
+
+Unique ID
+
+==================================================
+DEVICE INFO
+==================================================
+
+Command:
+
+ibuilder device info
+
+Display:
+
+Hardware info
+
+OS version
+
+Storage
+
+Battery
+
+Network
+
+Developer mode
+
+Installed app info
+
+==================================================
+DEVICE INSTALL
+==================================================
+
+Command:
+
+ibuilder device install
+
+Requirements:
+
+Install IPA
+
+Install latest artifact
+
+Install specific artifact
+
+Progress display
+
+Installation validation
+
+==================================================
+DEVICE LAUNCH
+==================================================
+
+Command:
+
+ibuilder device launch
+
+Launch:
+
+Installed application
+
+Validate launch success
+
+Display launch status
+
+==================================================
+DEVICE LOGS
+==================================================
+
+Command:
+
+ibuilder device logs
+
+Features:
+
+Live streaming
+
+Save to file
+
+Filter logs
+
+Search logs
+
+Output location:
+
+.build/logs/
+
+==================================================
+SCREENSHOT SYSTEM
+==================================================
+
+Command:
+
+ibuilder device screenshot
+
+Save:
+
+screenshots/
+
+Features:
+
+Timestamped screenshots
+
+Device metadata
+
+Multiple screenshot support
+
+==================================================
+AUTO INSTALL FLOW
+==================================================
+
+Support:
+
+ibuilder ios build --install
+
+Flow:
+
+Build
+
+Download
+
+Install
+
+Launch
+
+Verify
+
+==================================================
+AUTO RECONNECT
+==================================================
+
+Implement:
+
+Connection recovery
+
+Network recovery
+
+Device reconnect
+
+Session restoration
+
+==================================================
+PACKAGE STRUCTURE
+==================================================
+
+Create:
+
+internal/mobai/
+
+Files:
+
+connect.go
+
+status.go
+
+doctor.go
+
+device.go
+
+logs.go
+
+install.go
+
+launch.go
+
+screenshot.go
+
+reconnect.go
+
+==================================================
+LOGGING
+==================================================
+
+Log:
+
+Connections
+
+Installs
+
+Launches
+
+Logs
+
+Screenshots
+
+Failures
+
+Reconnects
+
+==================================================
+ERROR HANDLING
+==================================================
+
+Handle:
+
+Connection failures
+
+Device unavailable
+
+Install failure
+
+Launch failure
+
+Network issues
+
+Timeouts
+
+Authentication issues
+
+==================================================
+UNIT TESTS
+==================================================
+
+Test:
+
+Configuration
+
+Status
+
+Doctor
+
+Reconnect
+
+Installation logic
+
+Screenshot system
+
+==================================================
+INTEGRATION TESTS
+==================================================
+
+Mock:
+
+MobAI API
+
+Device connections
+
+Install flows
+
+Log streaming
+
+Screenshot capture
+
+==================================================
+PERFORMANCE TESTS
+==================================================
+
+Test:
+
+Long sessions
+
+Reconnect scenarios
+
+Large log streams
+
+Repeated screenshots
+
+==================================================
+TEST EXECUTION RULE
+==================================================
+
+Run tests.
+
+Fix failures.
+
+Run tests again.
+
+Run lint.
+
+Fix lint.
+
+Run lint again.
+
+Build project.
+
+Verify build.
+
+Build project again.
+
+Testing must happen TWICE.
+
+==================================================
+DOCUMENTATION
+==================================================
+
+Create:
+
+docs/mobai.md
+
+docs/device-management.md
+
+docs/device-installation.md
+
+docs/device-logs.md
+
+docs/screenshots.md
+
+Update README.
+
+Add examples.
+
+==================================================
+REPORTS
+==================================================
+
+Generate:
+
+reports/phase8-report.md
+
+reports/phase8-testing.md
+
+reports/phase8-bugs.md
+
+reports/phase8-summary.md
+
+Include:
+
+Architecture decisions
+
+Files created
+
+Tests executed
+
+Issues fixed
+
+Performance notes
+
+Future improvements
+
+==================================================
+QUALITY RULES
+==================================================
+
+Requirements:
+
+SOLID
+
+Clean Architecture
+
+Reusable modules
+
+Scalable design
+
+Production ready
+
+No hacks
+
+No dead code
+
+==================================================
+FINAL VERIFICATION
+==================================================
+
+Verify:
+
+ibuilder mobai connect
+
+ibuilder mobai status
+
+ibuilder mobai doctor
+
+ibuilder device list
+
+ibuilder device info
+
+ibuilder device logs
+
+ibuilder device screenshot
+
+ibuilder device install
+
+ibuilder device launch
+
+Verify:
+
+Connection works
+
+Install works
+
+Logs work
+
+Screenshots generated
+
+==================================================
+COMMIT
+==================================================
+
+Create detailed commit.
+
+Example:
+
+feat(mobai): add real device management and remote deployment support
+
+==================================================
+PUSH
+==================================================
+
+git add .
+
+git commit
+
+git push origin main
+
+Only push when:
+
+✓ tests pass
+✓ build passes
+✓ lint passes
+✓ docs updated
+✓ reports generated
+
+==================================================
+PHASE COMPLETION
+==================================================
+
+Create:
+
+reports/phase8-completion.md
+
+Include:
+
+Completed work
+
+Pending work
+
+Known limitations
+
+Recommendations for Phase 9
+
+Then commit and push.
+
+END PHASE 8

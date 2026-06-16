@@ -1,0 +1,624 @@
+PROJECT: iBuilder
+
+Repository:
+https://github.com/kanjariyaraj/iBuilder.git
+
+==================================================
+PHASE 9
+FLUTTER DEVELOPMENT WORKFLOW
+==================================================
+
+MISSION
+
+Create a complete Flutter development experience
+for Windows, Linux and WSL users using real iPhone
+devices through MobAI.
+
+Goal:
+
+Allow Flutter developers to:
+
+Develop
+
+Hot reload
+
+Hot restart
+
+Watch files
+
+Attach to running app
+
+Deploy to device
+
+View logs
+
+Without needing a Mac.
+
+==================================================
+PRE-IMPLEMENTATION
+==================================================
+
+Before coding:
+
+1. Pull latest repository.
+2. Read all previous reports.
+3. Read architecture docs.
+4. Read MobAI integration.
+5. Read build engine.
+6. Read detector engine.
+7. Verify build passes.
+8. Verify tests pass.
+9. Create implementation plan.
+10. Create TODO list.
+
+Never code immediately.
+
+Workflow:
+
+ANALYZE
+→ PLAN
+→ TODO
+→ IMPLEMENT
+→ TEST
+→ FIX
+→ RETEST
+→ DOCUMENT
+→ REPORT
+→ COMMIT
+→ PUSH
+
+==================================================
+GOAL
+==================================================
+
+Implement Flutter development commands.
+
+Support:
+
+Hot Reload
+
+Hot Restart
+
+Watch Mode
+
+Attach
+
+Deploy
+
+Logs
+
+Real device workflows
+
+==================================================
+COMMANDS
+==================================================
+
+ibuilder flutter dev
+
+ibuilder flutter attach
+
+ibuilder flutter watch
+
+ibuilder flutter reload
+
+ibuilder flutter restart
+
+ibuilder flutter logs
+
+ibuilder flutter doctor
+
+==================================================
+FLUTTER DETECTION
+==================================================
+
+Use detector engine.
+
+Validate:
+
+pubspec.yaml
+
+ios/
+
+flutter project structure
+
+Flutter SDK availability
+
+==================================================
+FLUTTER DOCTOR
+==================================================
+
+Command:
+
+ibuilder flutter doctor
+
+Checks:
+
+Flutter installed
+
+Dart installed
+
+Project valid
+
+MobAI connected
+
+Device available
+
+Dependencies resolved
+
+Output:
+
+Healthy
+
+Warning
+
+Failure
+
+Fix suggestions
+
+==================================================
+DEV MODE
+==================================================
+
+Command:
+
+ibuilder flutter dev
+
+Flow:
+
+Validate project
+
+Validate MobAI
+
+Build app
+
+Install app
+
+Launch app
+
+Attach debugger
+
+Begin development session
+
+==================================================
+ATTACH MODE
+==================================================
+
+Command:
+
+ibuilder flutter attach
+
+Attach to:
+
+Running Flutter application
+
+Display attach command
+
+Support custom device IDs
+
+==================================================
+WATCH MODE
+==================================================
+
+Command:
+
+ibuilder flutter watch
+
+Requirements:
+
+File system monitoring
+
+Auto reload trigger
+
+Smart debounce
+
+Ignore generated files
+
+Support:
+
+lib/
+
+assets/
+
+config files
+
+==================================================
+HOT RELOAD
+==================================================
+
+Command:
+
+ibuilder flutter reload
+
+Features:
+
+Trigger Flutter hot reload
+
+Verify success
+
+Display results
+
+==================================================
+HOT RESTART
+==================================================
+
+Command:
+
+ibuilder flutter restart
+
+Features:
+
+Trigger Flutter hot restart
+
+Verify success
+
+Display status
+
+==================================================
+LOG STREAMING
+==================================================
+
+Command:
+
+ibuilder flutter logs
+
+Features:
+
+Live logs
+
+Search
+
+Filter
+
+Save logs
+
+Output:
+
+.build/logs/flutter/
+
+==================================================
+CONFIGURATION
+==================================================
+
+Update:
+
+builder.json
+
+Add:
+
+{
+  "flutter": {
+    "watch": true,
+    "hot_reload": true,
+    "debounce_ms": 500,
+    "auto_attach": true,
+    "auto_install": true
+  }
+}
+
+==================================================
+WATCH ENGINE
+==================================================
+
+Implement:
+
+File watcher
+
+Change detector
+
+Debounce system
+
+Reload dispatcher
+
+Recovery system
+
+==================================================
+AUTO RECOVERY
+==================================================
+
+Handle:
+
+Device disconnect
+
+Network issues
+
+Attach failure
+
+Build failure
+
+Reload failure
+
+Attempt reconnect.
+
+==================================================
+PACKAGE STRUCTURE
+==================================================
+
+Create:
+
+internal/flutter/
+
+Files:
+
+doctor.go
+
+dev.go
+
+attach.go
+
+watch.go
+
+reload.go
+
+restart.go
+
+logs.go
+
+session.go
+
+recovery.go
+
+==================================================
+LOGGING
+==================================================
+
+Log:
+
+Attach
+
+Reload
+
+Restart
+
+Build
+
+Install
+
+Watch events
+
+Failures
+
+Recoveries
+
+==================================================
+ERROR HANDLING
+==================================================
+
+Handle:
+
+Flutter missing
+
+Dart missing
+
+Project invalid
+
+Device unavailable
+
+MobAI disconnected
+
+Reload failures
+
+Attach failures
+
+==================================================
+UNIT TESTS
+==================================================
+
+Test:
+
+Watcher
+
+Config
+
+Doctor
+
+Attach logic
+
+Reload logic
+
+Restart logic
+
+Recovery system
+
+==================================================
+INTEGRATION TESTS
+==================================================
+
+Mock:
+
+Flutter CLI
+
+MobAI
+
+Devices
+
+Attach sessions
+
+Hot reload
+
+Hot restart
+
+==================================================
+PERFORMANCE TESTS
+==================================================
+
+Test:
+
+Large projects
+
+Frequent file changes
+
+Long sessions
+
+Repeated reloads
+
+==================================================
+TEST EXECUTION RULE
+==================================================
+
+Run tests.
+
+Fix failures.
+
+Run tests again.
+
+Run lint.
+
+Fix lint.
+
+Run lint again.
+
+Build project.
+
+Verify build.
+
+Build project again.
+
+Testing must happen TWICE.
+
+==================================================
+DOCUMENTATION
+==================================================
+
+Create:
+
+docs/flutter-dev.md
+
+docs/flutter-watch.md
+
+docs/flutter-hot-reload.md
+
+docs/flutter-troubleshooting.md
+
+Update README.
+
+Add examples.
+
+==================================================
+REPORTS
+==================================================
+
+Generate:
+
+reports/phase9-report.md
+
+reports/phase9-testing.md
+
+reports/phase9-bugs.md
+
+reports/phase9-summary.md
+
+Include:
+
+Architecture decisions
+
+Files created
+
+Tests executed
+
+Issues fixed
+
+Performance notes
+
+Future improvements
+
+==================================================
+QUALITY RULES
+==================================================
+
+Requirements:
+
+SOLID
+
+Clean Architecture
+
+Reusable modules
+
+Scalable design
+
+Production ready
+
+No hacks
+
+No dead code
+
+==================================================
+FINAL VERIFICATION
+==================================================
+
+Verify:
+
+ibuilder flutter doctor
+
+ibuilder flutter dev
+
+ibuilder flutter attach
+
+ibuilder flutter watch
+
+ibuilder flutter reload
+
+ibuilder flutter restart
+
+ibuilder flutter logs
+
+Verify:
+
+Attach works
+
+Watch works
+
+Reload works
+
+Restart works
+
+Logs work
+
+==================================================
+COMMIT
+==================================================
+
+Create detailed commit.
+
+Example:
+
+feat(flutter): add complete flutter development workflow and hot reload support
+
+==================================================
+PUSH
+==================================================
+
+git add .
+
+git commit
+
+git push origin main
+
+Only push when:
+
+✓ tests pass
+✓ build passes
+✓ lint passes
+✓ docs updated
+✓ reports generated
+
+==================================================
+PHASE COMPLETION
+==================================================
+
+Create:
+
+reports/phase9-completion.md
+
+Include:
+
+Completed work
+
+Pending work
+
+Known limitations
+
+Recommendations for Phase 10
+
+Then commit and push.
+
+END PHASE 9

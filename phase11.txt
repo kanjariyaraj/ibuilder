@@ -1,0 +1,604 @@
+PROJECT: iBuilder
+
+Repository:
+https://github.com/kanjariyaraj/iBuilder.git
+
+==================================================
+PHASE 11
+AI TROUBLESHOOTER & AUTO-FIX ENGINE
+==================================================
+
+MISSION
+
+Transform iBuilder from a build system into an
+intelligent iOS development assistant.
+
+Goal:
+
+Automatically analyze:
+
+Build failures
+
+Workflow failures
+
+Signing failures
+
+Flutter failures
+
+React Native failures
+
+Dependency issues
+
+Configuration issues
+
+And provide:
+
+Root cause analysis
+
+Fix recommendations
+
+Patch suggestions
+
+Auto-fix capabilities
+
+==================================================
+PRE-IMPLEMENTATION
+==================================================
+
+Before coding:
+
+1. Pull latest repository.
+2. Read all reports.
+3. Read architecture docs.
+4. Read build engine.
+5. Read signing engine.
+6. Read Flutter workflow.
+7. Read React Native workflow.
+8. Verify build passes.
+9. Verify tests pass.
+10. Create implementation plan.
+
+Never start coding immediately.
+
+Workflow:
+
+ANALYZE
+→ PLAN
+→ TODO
+→ IMPLEMENT
+→ TEST
+→ FIX
+→ RETEST
+→ DOCUMENT
+→ REPORT
+→ COMMIT
+→ PUSH
+
+==================================================
+GOAL
+==================================================
+
+Implement AI-powered diagnostics.
+
+Users should understand failures instantly.
+
+==================================================
+COMMANDS
+==================================================
+
+ibuilder ai explain
+
+ibuilder ai analyze
+
+ibuilder ai doctor
+
+ibuilder ai fix
+
+ibuilder ai report
+
+==================================================
+AI EXPLAIN
+==================================================
+
+Command:
+
+ibuilder ai explain
+
+Analyze:
+
+Latest build
+
+Latest logs
+
+Latest workflow
+
+Display:
+
+Problem
+
+Cause
+
+Impact
+
+Fix recommendation
+
+Confidence score
+
+==================================================
+AI ANALYZE
+==================================================
+
+Command:
+
+ibuilder ai analyze
+
+Inputs:
+
+Build logs
+
+Workflow logs
+
+Signing logs
+
+Flutter logs
+
+React Native logs
+
+Output:
+
+Detailed analysis
+
+Root cause
+
+Suggested fixes
+
+==================================================
+AI DOCTOR
+==================================================
+
+Command:
+
+ibuilder ai doctor
+
+Perform:
+
+Full repository audit
+
+Configuration audit
+
+Build audit
+
+Dependency audit
+
+Signing audit
+
+Output:
+
+Issues
+
+Warnings
+
+Recommendations
+
+==================================================
+AI FIX
+==================================================
+
+Command:
+
+ibuilder ai fix
+
+Capabilities:
+
+Generate patch suggestions
+
+Generate config fixes
+
+Generate workflow fixes
+
+Generate dependency fixes
+
+Never apply destructive changes without approval.
+
+==================================================
+AI REPORT
+==================================================
+
+Command:
+
+ibuilder ai report
+
+Generate:
+
+Markdown report
+
+JSON report
+
+HTML report
+
+Store:
+
+.build/reports/ai/
+
+==================================================
+FAILURE CATEGORIES
+==================================================
+
+Build Failures
+
+Workflow Failures
+
+Signing Failures
+
+Provisioning Failures
+
+Certificate Failures
+
+GitHub Actions Failures
+
+Flutter Failures
+
+React Native Failures
+
+Metro Failures
+
+Dependency Failures
+
+Network Failures
+
+Permission Failures
+
+==================================================
+ANALYSIS ENGINE
+==================================================
+
+Create:
+
+internal/ai/
+
+Files:
+
+analyzer.go
+
+doctor.go
+
+explain.go
+
+fix.go
+
+report.go
+
+knowledgebase.go
+
+classifiers.go
+
+==================================================
+KNOWLEDGE BASE
+==================================================
+
+Create local rule database.
+
+Include:
+
+Common Xcode errors
+
+Common signing errors
+
+Flutter issues
+
+React Native issues
+
+GitHub Actions failures
+
+MobAI issues
+
+Store:
+
+internal/ai/rules/
+
+==================================================
+LOG PARSING
+==================================================
+
+Support:
+
+Workflow logs
+
+Build logs
+
+Flutter logs
+
+RN logs
+
+Signing logs
+
+System logs
+
+==================================================
+PATCH GENERATION
+==================================================
+
+Generate:
+
+Suggested code changes
+
+Workflow updates
+
+Config updates
+
+Dependency fixes
+
+Output:
+
+Human review required
+
+==================================================
+CONFIDENCE SYSTEM
+==================================================
+
+Display:
+
+High confidence
+
+Medium confidence
+
+Low confidence
+
+Explain reasoning.
+
+==================================================
+CONFIGURATION
+==================================================
+
+Update:
+
+builder.json
+
+Add:
+
+{
+  "ai": {
+    "enabled": true,
+    "auto_fix": false,
+    "report_format": "markdown",
+    "confidence_threshold": 0.8
+  }
+}
+
+==================================================
+SAFETY RULES
+==================================================
+
+Never:
+
+Delete user code
+
+Modify secrets
+
+Push changes automatically
+
+Apply destructive patches
+
+Require explicit confirmation.
+
+==================================================
+ERROR HANDLING
+==================================================
+
+Handle:
+
+Missing logs
+
+Corrupt logs
+
+Unknown failures
+
+Incomplete workflows
+
+Missing configs
+
+==================================================
+LOGGING
+==================================================
+
+Log:
+
+Analysis
+
+Classification
+
+Recommendations
+
+Generated fixes
+
+Reports
+
+==================================================
+UNIT TESTS
+==================================================
+
+Test:
+
+Classifiers
+
+Parsers
+
+Knowledge base
+
+Report generation
+
+Fix generation
+
+==================================================
+INTEGRATION TESTS
+==================================================
+
+Use:
+
+Real-world failure samples
+
+Xcode failures
+
+Signing failures
+
+Flutter failures
+
+React Native failures
+
+==================================================
+PERFORMANCE TESTS
+==================================================
+
+Test:
+
+Large logs
+
+Multiple builds
+
+Large reports
+
+==================================================
+TEST EXECUTION RULE
+==================================================
+
+Run tests.
+
+Fix failures.
+
+Run tests again.
+
+Run lint.
+
+Fix lint.
+
+Run lint again.
+
+Build project.
+
+Verify build.
+
+Build project again.
+
+Testing must happen TWICE.
+
+==================================================
+DOCUMENTATION
+==================================================
+
+Create:
+
+docs/ai-engine.md
+
+docs/ai-doctor.md
+
+docs/ai-fix.md
+
+docs/troubleshooting.md
+
+Update README.
+
+==================================================
+REPORTS
+==================================================
+
+Generate:
+
+reports/phase11-report.md
+
+reports/phase11-testing.md
+
+reports/phase11-bugs.md
+
+reports/phase11-summary.md
+
+==================================================
+QUALITY RULES
+==================================================
+
+Requirements:
+
+SOLID
+
+Clean Architecture
+
+Deterministic outputs
+
+Transparent reasoning
+
+Safe fixes
+
+Production ready
+
+==================================================
+FINAL VERIFICATION
+==================================================
+
+Verify:
+
+ibuilder ai explain
+
+ibuilder ai analyze
+
+ibuilder ai doctor
+
+ibuilder ai fix
+
+ibuilder ai report
+
+Verify:
+
+Reports generated
+
+Root causes identified
+
+Recommendations valid
+
+==================================================
+COMMIT
+==================================================
+
+Create detailed commit.
+
+Example:
+
+feat(ai): add intelligent build troubleshooting and auto-fix engine
+
+==================================================
+PUSH
+==================================================
+
+git add .
+
+git commit
+
+git push origin main
+
+Only push when:
+
+✓ tests pass
+✓ build passes
+✓ lint passes
+✓ docs updated
+✓ reports generated
+
+==================================================
+PHASE COMPLETION
+==================================================
+
+Create:
+
+reports/phase11-completion.md
+
+Include:
+
+Completed work
+
+Pending work
+
+Known limitations
+
+Recommendations for Phase 12
+
+Then commit and push.
+
+END PHASE 11

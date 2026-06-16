@@ -1,0 +1,632 @@
+PROJECT: iBuilder
+
+Repository:
+https://github.com/kanjariyaraj/iBuilder.git
+
+==================================================
+PHASE 10
+REACT NATIVE DEVELOPMENT WORKFLOW
+==================================================
+
+MISSION
+
+Create a complete React Native development
+experience for Windows, Linux and WSL users
+using real iPhone devices through MobAI.
+
+Goal:
+
+Allow React Native developers to:
+
+Develop
+
+Attach
+
+Reload
+
+Manage Metro
+
+Deploy
+
+Debug
+
+View Logs
+
+Without needing a Mac.
+
+==================================================
+PRE-IMPLEMENTATION
+==================================================
+
+Before coding:
+
+1. Pull latest repository.
+2. Read all reports.
+3. Read architecture docs.
+4. Read MobAI integration.
+5. Read Flutter workflow implementation.
+6. Read detector engine.
+7. Verify build passes.
+8. Verify tests pass.
+9. Create implementation plan.
+10. Create TODO list.
+
+Never code immediately.
+
+Workflow:
+
+ANALYZE
+→ PLAN
+→ TODO
+→ IMPLEMENT
+→ TEST
+→ FIX
+→ RETEST
+→ DOCUMENT
+→ REPORT
+→ COMMIT
+→ PUSH
+
+==================================================
+GOAL
+==================================================
+
+Implement React Native development commands.
+
+Support:
+
+Metro
+
+Reload
+
+Fast Refresh
+
+Attach
+
+Deploy
+
+Logs
+
+Real device workflows
+
+==================================================
+COMMANDS
+==================================================
+
+ibuilder rn dev
+
+ibuilder rn attach
+
+ibuilder rn metro
+
+ibuilder rn reload
+
+ibuilder rn logs
+
+ibuilder rn doctor
+
+ibuilder rn install
+
+==================================================
+PROJECT DETECTION
+==================================================
+
+Validate:
+
+package.json
+
+react-native dependency
+
+ios/
+
+node_modules
+
+Metro compatibility
+
+==================================================
+RN DOCTOR
+==================================================
+
+Command:
+
+ibuilder rn doctor
+
+Checks:
+
+Node installed
+
+npm installed
+
+yarn installed
+
+pnpm installed
+
+React Native detected
+
+Metro available
+
+MobAI connected
+
+Device available
+
+Output:
+
+Healthy
+
+Warning
+
+Failure
+
+Fix suggestions
+
+==================================================
+DEV MODE
+==================================================
+
+Command:
+
+ibuilder rn dev
+
+Flow:
+
+Validate project
+
+Install dependencies if needed
+
+Start Metro
+
+Connect device
+
+Install app
+
+Launch app
+
+Attach logs
+
+Begin session
+
+==================================================
+ATTACH MODE
+==================================================
+
+Command:
+
+ibuilder rn attach
+
+Attach to:
+
+Running RN app
+
+Running Metro
+
+Specific device
+
+Custom ports
+
+==================================================
+METRO MANAGEMENT
+==================================================
+
+Command:
+
+ibuilder rn metro
+
+Support:
+
+Start
+
+Stop
+
+Restart
+
+Status
+
+Port configuration
+
+Custom host
+
+==================================================
+FAST REFRESH
+==================================================
+
+Command:
+
+ibuilder rn reload
+
+Trigger:
+
+Fast Refresh
+
+Manual Reload
+
+Device refresh
+
+Verify success
+
+==================================================
+LOG STREAMING
+==================================================
+
+Command:
+
+ibuilder rn logs
+
+Features:
+
+Live logs
+
+Filters
+
+Search
+
+Save logs
+
+Output:
+
+.build/logs/react-native/
+
+==================================================
+INSTALL FLOW
+==================================================
+
+Command:
+
+ibuilder rn install
+
+Support:
+
+Latest IPA
+
+Specific build
+
+Custom artifact
+
+Verify installation
+
+==================================================
+CONFIGURATION
+==================================================
+
+Update:
+
+builder.json
+
+Add:
+
+{
+  "reactnative": {
+    "metro_port": 8081,
+    "auto_start_metro": true,
+    "auto_attach": true,
+    "auto_install": true,
+    "fast_refresh": true
+  }
+}
+
+==================================================
+METRO RECOVERY
+==================================================
+
+Implement:
+
+Port conflict detection
+
+Auto restart
+
+Auto reconnect
+
+Session recovery
+
+==================================================
+AUTO RECOVERY
+==================================================
+
+Handle:
+
+Metro crashes
+
+Device disconnect
+
+MobAI disconnect
+
+Attach failures
+
+Reload failures
+
+Recover automatically.
+
+==================================================
+PACKAGE STRUCTURE
+==================================================
+
+Create:
+
+internal/reactnative/
+
+Files:
+
+doctor.go
+
+dev.go
+
+attach.go
+
+metro.go
+
+reload.go
+
+logs.go
+
+install.go
+
+session.go
+
+recovery.go
+
+==================================================
+LOGGING
+==================================================
+
+Log:
+
+Metro start
+
+Metro stop
+
+Attach
+
+Reload
+
+Install
+
+Launch
+
+Recoveries
+
+Failures
+
+==================================================
+ERROR HANDLING
+==================================================
+
+Handle:
+
+Node missing
+
+Package manager missing
+
+Metro unavailable
+
+Port conflict
+
+Device unavailable
+
+MobAI disconnected
+
+Install failure
+
+Attach failure
+
+==================================================
+UNIT TESTS
+==================================================
+
+Test:
+
+Metro manager
+
+Config
+
+Doctor
+
+Attach logic
+
+Reload logic
+
+Install logic
+
+Recovery system
+
+==================================================
+INTEGRATION TESTS
+==================================================
+
+Mock:
+
+Metro
+
+Node
+
+React Native CLI
+
+MobAI
+
+Devices
+
+Install sessions
+
+==================================================
+PERFORMANCE TESTS
+==================================================
+
+Test:
+
+Large RN projects
+
+Metro reload performance
+
+Long development sessions
+
+Repeated reconnects
+
+==================================================
+TEST EXECUTION RULE
+==================================================
+
+Run tests.
+
+Fix failures.
+
+Run tests again.
+
+Run lint.
+
+Fix lint.
+
+Run lint again.
+
+Build project.
+
+Verify build.
+
+Build project again.
+
+Testing must happen TWICE.
+
+==================================================
+DOCUMENTATION
+==================================================
+
+Create:
+
+docs/react-native-dev.md
+
+docs/metro.md
+
+docs/fast-refresh.md
+
+docs/react-native-troubleshooting.md
+
+Update README.
+
+Add examples.
+
+==================================================
+REPORTS
+==================================================
+
+Generate:
+
+reports/phase10-report.md
+
+reports/phase10-testing.md
+
+reports/phase10-bugs.md
+
+reports/phase10-summary.md
+
+Include:
+
+Architecture decisions
+
+Files created
+
+Tests executed
+
+Issues fixed
+
+Performance notes
+
+Future improvements
+
+==================================================
+QUALITY RULES
+==================================================
+
+Requirements:
+
+SOLID
+
+Clean Architecture
+
+Reusable modules
+
+Scalable design
+
+Production ready
+
+No hacks
+
+No dead code
+
+==================================================
+FINAL VERIFICATION
+==================================================
+
+Verify:
+
+ibuilder rn doctor
+
+ibuilder rn dev
+
+ibuilder rn attach
+
+ibuilder rn metro
+
+ibuilder rn reload
+
+ibuilder rn logs
+
+ibuilder rn install
+
+Verify:
+
+Metro works
+
+Attach works
+
+Reload works
+
+Install works
+
+Logs work
+
+==================================================
+COMMIT
+==================================================
+
+Create detailed commit.
+
+Example:
+
+feat(react-native): add complete react native development workflow and metro integration
+
+==================================================
+PUSH
+==================================================
+
+git add .
+
+git commit
+
+git push origin main
+
+Only push when:
+
+✓ tests pass
+✓ build passes
+✓ lint passes
+✓ docs updated
+✓ reports generated
+
+==================================================
+PHASE COMPLETION
+==================================================
+
+Create:
+
+reports/phase10-completion.md
+
+Include:
+
+Completed work
+
+Pending work
+
+Known limitations
+
+Recommendations for Phase 11
+
+Then commit and push.
+
+END PHASE 10

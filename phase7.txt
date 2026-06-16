@@ -1,0 +1,697 @@
+PROJECT: iBuilder
+
+Repository:
+https://github.com/kanjariyaraj/iBuilder.git
+
+==================================================
+PHASE 7
+ARTIFACT MANAGER & BUILD HISTORY SYSTEM
+==================================================
+
+MISSION
+
+Create a professional artifact management and
+build history system.
+
+Users must be able to:
+
+View builds
+
+View artifacts
+
+Download artifacts
+
+Inspect builds
+
+Manage build history
+
+Manage logs
+
+Track releases
+
+==================================================
+PRE-IMPLEMENTATION
+==================================================
+
+Before coding:
+
+1. Pull latest repository.
+2. Read all reports.
+3. Read docs.
+4. Read build engine.
+5. Read signing system.
+6. Verify tests pass.
+7. Verify build passes.
+8. Create implementation plan.
+9. Create TODO list.
+10. Generate risk analysis.
+
+Never start coding immediately.
+
+Workflow:
+
+ANALYZE
+→ PLAN
+→ TODO
+→ IMPLEMENT
+→ TEST
+→ FIX
+→ RETEST
+→ DOCUMENT
+→ REPORT
+→ COMMIT
+→ PUSH
+
+==================================================
+GOAL
+==================================================
+
+Implement complete artifact management.
+
+Users should manage:
+
+IPA files
+
+Build logs
+
+Build reports
+
+Workflow runs
+
+Release assets
+
+==================================================
+COMMANDS
+==================================================
+
+ibuilder artifact list
+
+ibuilder artifact download
+
+ibuilder artifact clean
+
+ibuilder artifact inspect
+
+ibuilder artifact latest
+
+ibuilder build history
+
+ibuilder build inspect
+
+ibuilder build logs
+
+ibuilder build open
+
+==================================================
+ARTIFACT LIST
+==================================================
+
+Command:
+
+ibuilder artifact list
+
+Display:
+
+Artifact name
+
+Build number
+
+Size
+
+Date
+
+Workflow
+
+Status
+
+Retention
+
+Support:
+
+--json
+
+--limit
+
+--all
+
+==================================================
+ARTIFACT DOWNLOAD
+==================================================
+
+Command:
+
+ibuilder artifact download
+
+Features:
+
+Download by:
+
+ID
+
+Name
+
+Latest
+
+Build number
+
+Support:
+
+Destination folder
+
+Overwrite handling
+
+Resume support
+
+Progress display
+
+==================================================
+ARTIFACT INSPECT
+==================================================
+
+Command:
+
+ibuilder artifact inspect
+
+Display:
+
+Artifact metadata
+
+Workflow metadata
+
+Build duration
+
+File size
+
+Download URL
+
+Retention
+
+==================================================
+LATEST ARTIFACT
+==================================================
+
+Command:
+
+ibuilder artifact latest
+
+Download latest successful IPA.
+
+Save to:
+
+dist/
+
+==================================================
+ARTIFACT CLEANUP
+==================================================
+
+Command:
+
+ibuilder artifact clean
+
+Options:
+
+--older-than
+
+--keep
+
+--all
+
+Remove:
+
+Local artifacts
+
+Temporary files
+
+Old reports
+
+==================================================
+BUILD HISTORY
+==================================================
+
+Command:
+
+ibuilder build history
+
+Display:
+
+Recent builds
+
+Status
+
+Duration
+
+Branch
+
+Commit
+
+Workflow
+
+Build number
+
+Support:
+
+Pagination
+
+Filtering
+
+JSON output
+
+==================================================
+BUILD INSPECT
+==================================================
+
+Command:
+
+ibuilder build inspect
+
+Display:
+
+Workflow details
+
+Jobs
+
+Steps
+
+Artifacts
+
+Duration
+
+Commit info
+
+Author
+
+Status
+
+==================================================
+BUILD LOGS
+==================================================
+
+Command:
+
+ibuilder build logs
+
+Support:
+
+Latest build
+
+Specific build
+
+Specific workflow
+
+Save logs to:
+
+dist/logs/
+
+==================================================
+BUILD OPEN
+==================================================
+
+Command:
+
+ibuilder build open
+
+Open:
+
+GitHub workflow page
+
+Build URL
+
+Artifact URL
+
+==================================================
+LOCAL STORAGE
+==================================================
+
+Create:
+
+.build/
+
+Structure:
+
+.build/
+
+artifacts/
+
+logs/
+
+reports/
+
+cache/
+
+metadata/
+
+==================================================
+METADATA DATABASE
+==================================================
+
+Store:
+
+Artifact metadata
+
+Build metadata
+
+History
+
+Downloads
+
+Local cache
+
+Use:
+
+JSON or lightweight storage
+
+Future extensible design.
+
+==================================================
+PACKAGE STRUCTURE
+==================================================
+
+Create:
+
+internal/artifacts/
+
+Files:
+
+artifact.go
+
+download.go
+
+history.go
+
+inspect.go
+
+logs.go
+
+storage.go
+
+cleanup.go
+
+metadata.go
+
+==================================================
+GITHUB INTEGRATION
+==================================================
+
+Integrate with:
+
+Workflow runs
+
+Artifacts API
+
+Release assets
+
+Build metadata
+
+==================================================
+REPORT GENERATION
+==================================================
+
+Automatically generate:
+
+Build reports
+
+Artifact reports
+
+History reports
+
+Store inside:
+
+.build/reports/
+
+==================================================
+ERROR HANDLING
+==================================================
+
+Handle:
+
+Artifact missing
+
+Expired artifact
+
+Network issues
+
+GitHub API failure
+
+Rate limits
+
+Permission issues
+
+Corrupt downloads
+
+Partial downloads
+
+==================================================
+DOWNLOAD SECURITY
+==================================================
+
+Validate:
+
+Checksums
+
+File sizes
+
+Download integrity
+
+Avoid corrupted artifacts.
+
+==================================================
+LOGGING
+==================================================
+
+Log:
+
+Downloads
+
+History lookups
+
+Artifact actions
+
+Cleanup actions
+
+Failures
+
+Retries
+
+Debug support
+
+==================================================
+UNIT TESTS
+==================================================
+
+Test:
+
+History
+
+Metadata
+
+Downloads
+
+Storage
+
+Cleanup
+
+Inspection
+
+==================================================
+INTEGRATION TESTS
+==================================================
+
+Mock:
+
+GitHub Artifacts API
+
+Workflow Runs API
+
+Release API
+
+Download system
+
+==================================================
+PERFORMANCE TESTING
+==================================================
+
+Test:
+
+100+ artifacts
+
+Large logs
+
+Large downloads
+
+History pagination
+
+==================================================
+TEST EXECUTION RULE
+==================================================
+
+Run tests.
+
+Fix failures.
+
+Run tests again.
+
+Run lint.
+
+Fix lint.
+
+Run lint again.
+
+Build project.
+
+Verify build.
+
+Build project again.
+
+Testing must happen TWICE.
+
+==================================================
+DOCUMENTATION
+==================================================
+
+Create:
+
+docs/artifacts.md
+
+docs/build-history.md
+
+docs/downloads.md
+
+docs/logs.md
+
+docs/storage.md
+
+Update README.
+
+Add examples.
+
+==================================================
+REPORTS
+==================================================
+
+Generate:
+
+reports/phase7-report.md
+
+reports/phase7-testing.md
+
+reports/phase7-bugs.md
+
+reports/phase7-summary.md
+
+Include:
+
+Architecture decisions
+
+Files created
+
+Tests executed
+
+Issues fixed
+
+Performance notes
+
+Future improvements
+
+==================================================
+QUALITY RULES
+==================================================
+
+Requirements:
+
+SOLID
+
+Clean Architecture
+
+Reusable modules
+
+Scalable design
+
+Production ready
+
+No hacks
+
+No dead code
+
+==================================================
+FINAL VERIFICATION
+==================================================
+
+Verify:
+
+ibuilder artifact list
+
+ibuilder artifact download
+
+ibuilder artifact inspect
+
+ibuilder artifact latest
+
+ibuilder artifact clean
+
+ibuilder build history
+
+ibuilder build inspect
+
+ibuilder build logs
+
+ibuilder build open
+
+Verify:
+
+Downloads work
+
+History works
+
+Reports generated
+
+Metadata stored
+
+==================================================
+COMMIT
+==================================================
+
+Create detailed commit.
+
+Example:
+
+feat(artifacts): add artifact management and build history system
+
+==================================================
+PUSH
+==================================================
+
+git add .
+
+git commit
+
+git push origin main
+
+Only push when:
+
+✓ tests pass
+✓ build passes
+✓ lint passes
+✓ docs updated
+✓ reports generated
+
+==================================================
+PHASE COMPLETION
+==================================================
+
+Create:
+
+reports/phase7-completion.md
+
+Include:
+
+Completed work
+
+Pending work
+
+Known limitations
+
+Recommendations for Phase 8
+
+Then commit and push.
+
+END PHASE 7
