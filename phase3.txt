@@ -1,0 +1,22 @@
+PROJECT: Builder
+
+==================================================
+PHASE 3
+iOS BUILD PIPELINE & WORKFLOW MANAGEMENT
+==================================================
+
+Implement iOS build pipeline using GitHub Actions.
+
+Commands:
+  builder build          Trigger iOS build
+  builder build status   Check build status
+  builder build list     List recent builds
+  builder build log      View build logs
+
+Requirements:
+  - Workflow dispatch via GitHub API
+  - Build status tracking
+  - Build artifact download
+  - Workflow templates for iOS, Flutter, React Native
+  - Build configuration in builder.json
+  - Error handling for failed builds

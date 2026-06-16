@@ -15,6 +15,9 @@ func TestConstants(t *testing.T) {
 	if APIRoot != "https://api.github.com" {
 		t.Errorf("unexpected APIRoot")
 	}
+	if DefaultClientID != "BuilderCLI" {
+		t.Errorf("unexpected DefaultClientID")
+	}
 }
 
 func TestTokenDir(t *testing.T) {

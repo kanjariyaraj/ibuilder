@@ -1,0 +1,616 @@
+PROJECT: iBuilder
+
+Repository:
+https://github.com/kanjariyaraj/iBuilder.git
+
+==================================================
+PHASE 5
+REMOTE IOS BUILD ENGINE
+==================================================
+
+CRITICAL PHASE
+
+This phase implements the core value of iBuilder.
+
+Goal:
+
+Allow users to build iOS applications remotely
+using GitHub-hosted macOS runners and download
+the resulting IPA locally.
+
+==================================================
+PRE-IMPLEMENTATION RULES
+==================================================
+
+Before coding:
+
+1. Pull latest repository.
+2. Read all previous phase reports.
+3. Read README.
+4. Read docs.
+5. Review generated workflow templates.
+6. Review detector outputs.
+7. Verify build passes.
+8. Verify tests pass.
+9. Create implementation plan.
+10. Create TODO list.
+
+Never code first.
+
+Always:
+
+ANALYZE
+→ PLAN
+→ TODO
+→ IMPLEMENT
+→ TEST
+→ FIX
+→ RETEST
+→ DOCUMENT
+→ REPORT
+→ COMMIT
+→ PUSH
+
+==================================================
+GOAL
+==================================================
+
+Implement:
+
+ibuilder ios build
+
+Remote build execution through GitHub Actions.
+
+==================================================
+COMMANDS
+==================================================
+
+ibuilder ios build
+
+ibuilder ios build --wait
+
+ibuilder ios build --release
+
+ibuilder ios build --debug
+
+ibuilder ios build --logs
+
+ibuilder ios build --json
+
+ibuilder ios build --download-only
+
+ibuilder ios build --clean
+
+==================================================
+BUILD FLOW
+==================================================
+
+User runs:
+
+ibuilder ios build
+
+System:
+
+1. Validate auth
+2. Validate repository
+3. Validate workflow
+4. Dispatch workflow
+5. Track workflow run
+6. Stream status
+7. Detect success/failure
+8. Download IPA
+9. Save to dist/
+10. Generate report
+
+==================================================
+WORKFLOW DISPATCH
+==================================================
+
+Use GitHub Actions API.
+
+Support:
+
+workflow_dispatch
+
+Pass inputs:
+
+build type
+
+scheme
+
+configuration
+
+platform
+
+==================================================
+WORKFLOW TRACKING
+==================================================
+
+Monitor:
+
+Queued
+
+Waiting
+
+Running
+
+Completed
+
+Failed
+
+Cancelled
+
+Timed Out
+
+==================================================
+STATUS OUTPUT
+==================================================
+
+Display:
+
+✓ Queued
+
+✓ Running
+
+✓ Uploading artifacts
+
+✓ Completed
+
+Friendly UX required.
+
+==================================================
+LOG STREAMING
+==================================================
+
+Support:
+
+ibuilder ios build --logs
+
+Display:
+
+Current job
+
+Current step
+
+Failures
+
+Warnings
+
+Build progress
+
+==================================================
+RUN MANAGEMENT
+==================================================
+
+Implement:
+
+internal/build/
+
+Required:
+
+dispatcher.go
+
+tracker.go
+
+runner.go
+
+logs.go
+
+status.go
+
+download.go
+
+report.go
+
+==================================================
+ARTIFACT SYSTEM
+==================================================
+
+Detect:
+
+IPA artifacts
+
+ZIP artifacts
+
+Build outputs
+
+Download automatically.
+
+==================================================
+DOWNLOAD LOCATION
+==================================================
+
+Create:
+
+dist/
+
+Examples:
+
+dist/app.ipa
+
+dist/build-report.json
+
+dist/build-log.txt
+
+==================================================
+DOWNLOAD ONLY MODE
+==================================================
+
+Support:
+
+ibuilder ios build --download-only
+
+Behavior:
+
+Only download latest successful artifact.
+
+No new build triggered.
+
+==================================================
+WAIT MODE
+==================================================
+
+Support:
+
+ibuilder ios build --wait
+
+Wait until build completion.
+
+Show live progress.
+
+==================================================
+JSON OUTPUT
+==================================================
+
+Support:
+
+ibuilder ios build --json
+
+Return:
+
+{
+  "status": "success",
+  "workflow_run": "",
+  "artifact": "",
+  "downloaded": true
+}
+
+==================================================
+FAILURE ANALYSIS
+==================================================
+
+Detect:
+
+Workflow failure
+
+Build failure
+
+Signing failure
+
+Artifact failure
+
+Timeout
+
+Permission issues
+
+Generate friendly messages.
+
+==================================================
+BUILD REPORTS
+==================================================
+
+Generate:
+
+dist/build-report.json
+
+dist/build-report.md
+
+Include:
+
+Build duration
+
+Workflow URL
+
+Status
+
+Artifact information
+
+Errors
+
+Warnings
+
+==================================================
+CONFIG SUPPORT
+==================================================
+
+Read:
+
+builder.json
+
+Use:
+
+Repo
+
+Branch
+
+Workflow
+
+Scheme
+
+Build settings
+
+==================================================
+SECURITY
+==================================================
+
+Never expose:
+
+Tokens
+
+Secrets
+
+Passwords
+
+Private credentials
+
+Mask all sensitive output.
+
+==================================================
+ERROR HANDLING
+==================================================
+
+Handle:
+
+GitHub unavailable
+
+Network failure
+
+Invalid workflow
+
+Missing workflow
+
+Permission denied
+
+Rate limits
+
+Timeout
+
+Artifact missing
+
+Build failure
+
+==================================================
+LOGGING
+==================================================
+
+Log:
+
+Dispatch
+
+Tracking
+
+Status
+
+Download
+
+Failures
+
+Retries
+
+Debug mode support.
+
+==================================================
+RETRY SYSTEM
+==================================================
+
+Implement retries for:
+
+Network
+
+GitHub API
+
+Artifact download
+
+Transient failures
+
+==================================================
+UNIT TESTS
+==================================================
+
+Test:
+
+Dispatch
+
+Tracking
+
+Download
+
+Status parsing
+
+Error handling
+
+Retry logic
+
+==================================================
+INTEGRATION TESTS
+==================================================
+
+Mock:
+
+GitHub Actions
+
+Workflow runs
+
+Artifact downloads
+
+Build statuses
+
+==================================================
+TEST EXECUTION RULE
+==================================================
+
+Run tests.
+
+Fix failures.
+
+Run tests again.
+
+Run lint.
+
+Fix lint.
+
+Run lint again.
+
+Build project.
+
+Verify build.
+
+Build again.
+
+Testing must happen TWICE.
+
+==================================================
+DOCUMENTATION
+==================================================
+
+Create:
+
+docs/ios-build.md
+
+docs/build-engine.md
+
+docs/artifacts.md
+
+docs/troubleshooting-builds.md
+
+Update README.
+
+Add examples.
+
+==================================================
+REPORTS
+==================================================
+
+Generate:
+
+reports/phase5-report.md
+
+reports/phase5-testing.md
+
+reports/phase5-bugs.md
+
+reports/phase5-summary.md
+
+Include:
+
+Architecture decisions
+
+Files created
+
+Tests executed
+
+Bugs fixed
+
+Performance notes
+
+Future improvements
+
+==================================================
+OPEN SOURCE QUALITY
+==================================================
+
+Requirements:
+
+SOLID
+
+Clean Architecture
+
+Reusable services
+
+Extensible design
+
+No hacks
+
+No dead code
+
+No debug leftovers
+
+Production ready
+
+==================================================
+FINAL VERIFICATION
+==================================================
+
+Verify:
+
+ibuilder ios build
+
+ibuilder ios build --wait
+
+ibuilder ios build --logs
+
+ibuilder ios build --json
+
+ibuilder ios build --download-only
+
+Verify:
+
+Workflow dispatch works
+
+Tracking works
+
+Logs work
+
+Artifacts download
+
+Reports generated
+
+==================================================
+COMMIT
+==================================================
+
+Create detailed commit.
+
+Example:
+
+feat(build): add remote github actions build engine and artifact download support
+
+==================================================
+PUSH
+==================================================
+
+git add .
+
+git commit
+
+git push origin main
+
+Only push when:
+
+✓ tests pass
+✓ build passes
+✓ lint passes
+✓ docs updated
+✓ reports generated
+
+==================================================
+PHASE COMPLETION
+==================================================
+
+Create:
+
+reports/phase5-completion.md
+
+Include:
+
+Completed work
+
+Pending work
+
+Known limitations
+
+Recommendations for Phase 6
+
+Then commit and push.
+
+END PHASE 5

@@ -45,11 +45,21 @@ type GitHubConfig struct {
 	Authenticated bool `json:"authenticated"`
 }
 
+type BuildConfig struct {
+	WorkflowID    string `json:"workflow_id"`
+	Branch        string `json:"branch"`
+	Scheme        string `json:"scheme"`
+	Configuration string `json:"configuration"`
+	BuildMode     string `json:"build_mode"`
+	ProjectType   string `json:"project_type"`
+}
+
 type Config struct {
 	ProjectName     string              `json:"project_name"`
 	Repository      string              `json:"repository"`
 	Repo            RepoConfig          `json:"repo"`
 	GitHub          GitHubConfig        `json:"github"`
+	Build           BuildConfig         `json:"build"`
 	IOS             iOSSettings         `json:"ios"`
 	Signing         SigningSettings     `json:"signing"`
 	MobAI           MobAISettings       `json:"mob_ai"`
@@ -68,6 +78,14 @@ func Default() *Config {
 		},
 		GitHub: GitHubConfig{
 			Authenticated: false,
+		},
+		Build: BuildConfig{
+			WorkflowID:    "",
+			Branch:        "main",
+			Scheme:        "",
+			Configuration: "Release",
+			BuildMode:     "release",
+			ProjectType:   "xcode",
 		},
 		IOS: iOSSettings{
 			MinimumVersion: "15.0",
@@ -138,6 +156,12 @@ func Validate(cfg *Config) []error {
 	}
 	if cfg.Repo.Branch == "" {
 		errs = append(errs, errors.New(errors.KindValidation, "repo.branch is required"))
+	}
+	if cfg.Build.Branch == "" {
+		errs = append(errs, errors.New(errors.KindValidation, "build.branch is required"))
+	}
+	if cfg.Build.BuildMode != "debug" && cfg.Build.BuildMode != "release" {
+		errs = append(errs, errors.New(errors.KindValidation, "build.build_mode must be 'debug' or 'release'"))
 	}
 	return errs
 }

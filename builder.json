@@ -9,6 +9,14 @@
   "github": {
     "authenticated": false
   },
+  "build": {
+    "workflow_id": "",
+    "branch": "main",
+    "scheme": "",
+    "configuration": "Release",
+    "build_mode": "release",
+    "project_type": "xcode"
+  },
   "ios": {
     "minimum_version": "15.0",
     "target_version": "17.0",

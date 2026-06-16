@@ -36,12 +36,17 @@ go build -o builder ./cmd/builder/
 | `builder repo connect` | Connect repository from git remote |
 | `builder repo info` | Display repository metadata |
 | `builder repo validate` | Validate repository access |
+| `builder build run` | Trigger an iOS build workflow |
+| `builder build status` | Check build status |
+| `builder build list` | List recent builds |
+| `builder build log` | View build logs |
+| `builder build artifacts` | List build artifacts |
 
 ## Roadmap
 
 - **Phase 1** — Foundation & CLI framework (completed)
-- **Phase 2** — GitHub authentication & repository management (current)
-- **Phase 3** — iOS build pipeline integration
+- **Phase 2** — GitHub authentication & repository management (completed)
+- **Phase 3** — iOS build pipeline integration (current)
 - **Phase 4** — Signing & code signing management
 - **Phase 5** — Release automation & GitHub integration
 

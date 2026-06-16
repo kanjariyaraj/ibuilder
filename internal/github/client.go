@@ -1,6 +1,7 @@
 package github
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"net/http"
@@ -55,6 +56,15 @@ func (c *Client) Get(path string) ([]byte, error) {
 	}
 
 	return io.ReadAll(resp.Body)
+}
+
+func (c *Client) NewRequest(method, url, body string) (*http.Request, error) {
+	req, err := http.NewRequest(method, url, bytes.NewBufferString(body))
+	if err != nil {
+		return nil, errors.Wrap(errors.KindInternal, "failed to create request", err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	return req, nil
 }
 
 func ValidateToken(token string) error {

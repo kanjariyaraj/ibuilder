@@ -1,0 +1,574 @@
+PROJECT: iBuilder
+
+Repository:
+https://github.com/kanjariyaraj/iBuilder.git
+
+==================================================
+PHASE 4
+INITIALIZATION ENGINE & WORKFLOW GENERATOR
+==================================================
+
+CRITICAL
+
+Before starting:
+
+1. Pull latest repository.
+2. Analyze entire repository.
+3. Read all previous phase reports.
+4. Read architecture documents.
+5. Read README.
+6. Read docs.
+7. Verify tests pass.
+8. Verify build passes.
+9. Review Phase 3 detector outputs.
+10. Create implementation plan.
+
+Never immediately code.
+
+Workflow:
+
+ANALYZE
+→ PLAN
+→ TODO
+→ IMPLEMENT
+→ TEST
+→ FIX
+→ RETEST
+→ DOCUMENT
+→ REPORT
+→ COMMIT
+→ PUSH
+
+==================================================
+GOAL
+==================================================
+
+Implement:
+
+ibuilder init
+
+This command should transform any supported project into
+an iBuilder-enabled project.
+
+User should only need:
+
+ibuilder init
+
+Everything else should be generated automatically.
+
+==================================================
+COMMANDS
+==================================================
+
+ibuilder init
+
+ibuilder init --force
+
+ibuilder init --dry-run
+
+ibuilder init --yes
+
+ibuilder init --json
+
+==================================================
+SUPPORTED PROJECTS
+==================================================
+
+Native iOS
+
+Flutter
+
+React Native
+
+Expo
+
+Capacitor
+
+Ionic
+
+Cordova
+
+Kotlin Multiplatform
+
+Unity Export
+
+Unreal Export
+
+==================================================
+INIT FLOW
+==================================================
+
+1. Detect project.
+2. Detect iOS path.
+3. Detect workspace.
+4. Detect scheme.
+5. Detect targets.
+6. Detect repository.
+7. Detect branch.
+8. Generate config.
+9. Generate workflow.
+10. Validate output.
+
+==================================================
+CONFIG GENERATION
+==================================================
+
+Generate:
+
+builder.json
+
+Populate automatically:
+
+{
+  "project": {
+    "type": "",
+    "name": ""
+  },
+  "repo": {
+    "owner": "",
+    "name": "",
+    "branch": "main"
+  },
+  "ios": {
+    "path": "",
+    "workspace": "",
+    "scheme": ""
+  },
+  "github": {},
+  "signing": {},
+  "mobai": {},
+  "flutter": {},
+  "reactnative": {}
+}
+
+==================================================
+SCHEME DETECTION
+==================================================
+
+Auto detect:
+
+Runner
+
+App
+
+Main target
+
+Custom targets
+
+Handle:
+
+Multiple schemes
+
+Multiple workspaces
+
+User selection when needed
+
+==================================================
+WORKFLOW GENERATION
+==================================================
+
+Generate:
+
+.github/workflows/ios-build.yml
+
+Automatically select correct template.
+
+==================================================
+WORKFLOW TEMPLATES
+==================================================
+
+Flutter template
+
+React Native template
+
+Native iOS template
+
+Expo template
+
+Capacitor template
+
+Unity template
+
+Unreal template
+
+==================================================
+TEMPLATE SYSTEM
+==================================================
+
+Create:
+
+templates/
+
+Required:
+
+flutter.yml
+
+react-native.yml
+
+native-ios.yml
+
+expo.yml
+
+capacitor.yml
+
+unity.yml
+
+unreal.yml
+
+==================================================
+WORKFLOW VALIDATION
+==================================================
+
+Validate:
+
+YAML syntax
+
+Required actions
+
+Required permissions
+
+Required environment
+
+Required secrets
+
+==================================================
+GITHUB DETECTION
+==================================================
+
+Detect:
+
+Remote URL
+
+Repository owner
+
+Repository name
+
+Default branch
+
+Actions availability
+
+Save into config.
+
+==================================================
+SAFE MODE
+==================================================
+
+Never overwrite existing files unless:
+
+--force
+
+Prompt user before overwrite.
+
+Support:
+
+--yes
+
+for CI automation.
+
+==================================================
+DRY RUN
+==================================================
+
+Support:
+
+ibuilder init --dry-run
+
+Show:
+
+Files to create
+
+Files to modify
+
+Templates selected
+
+No changes applied.
+
+==================================================
+JSON OUTPUT
+==================================================
+
+Support:
+
+ibuilder init --json
+
+Return machine-readable output.
+
+==================================================
+CREATE PACKAGE
+==================================================
+
+internal/init/
+
+Required:
+
+init.go
+
+config_generator.go
+
+workflow_generator.go
+
+template_manager.go
+
+scheme_detector.go
+
+validation.go
+
+==================================================
+ERROR HANDLING
+==================================================
+
+Handle:
+
+Missing project
+
+Unknown project
+
+Broken project
+
+Missing ios folder
+
+Missing workspace
+
+Missing scheme
+
+Git errors
+
+Filesystem errors
+
+Permission errors
+
+==================================================
+LOGGING
+==================================================
+
+Log:
+
+Detection
+
+Generation
+
+Validation
+
+Warnings
+
+Failures
+
+Debug support
+
+==================================================
+TEST DATA
+==================================================
+
+Create fixtures:
+
+Flutter
+
+React Native
+
+Native iOS
+
+Expo
+
+Capacitor
+
+Unity
+
+Unreal
+
+==================================================
+UNIT TESTS
+==================================================
+
+Test:
+
+Config generation
+
+Template generation
+
+Workflow generation
+
+Scheme detection
+
+Validation
+
+==================================================
+INTEGRATION TESTS
+==================================================
+
+Run:
+
+ibuilder init
+
+against all fixtures.
+
+Verify:
+
+Generated config
+
+Generated workflow
+
+Validation success
+
+==================================================
+TEST EXECUTION RULE
+==================================================
+
+Run tests.
+
+Fix failures.
+
+Run tests again.
+
+Run lint.
+
+Fix lint.
+
+Run lint again.
+
+Build project.
+
+Verify build.
+
+Build project again.
+
+Testing must happen TWICE.
+
+==================================================
+DOCUMENTATION
+==================================================
+
+Create:
+
+docs/init-command.md
+
+docs/workflow-generation.md
+
+docs/templates.md
+
+docs/project-bootstrap.md
+
+Update README.
+
+Include examples.
+
+==================================================
+REPORTS
+==================================================
+
+Generate:
+
+reports/phase4-report.md
+
+reports/phase4-testing.md
+
+reports/phase4-bugs.md
+
+reports/phase4-summary.md
+
+Include:
+
+Architecture decisions
+
+Files created
+
+Tests executed
+
+Bugs fixed
+
+Future improvements
+
+==================================================
+OPEN SOURCE QUALITY
+==================================================
+
+Requirements:
+
+SOLID
+
+Clean Architecture
+
+Contributor friendly
+
+Extensible templates
+
+Reusable code
+
+No dead code
+
+No hacks
+
+Production ready
+
+==================================================
+FINAL VERIFICATION
+==================================================
+
+Verify:
+
+ibuilder init
+
+ibuilder init --force
+
+ibuilder init --dry-run
+
+ibuilder init --json
+
+Verify:
+
+Generated builder.json
+
+Generated workflow
+
+Valid YAML
+
+Valid config
+
+==================================================
+COMMIT
+==================================================
+
+Create detailed commit.
+
+Example:
+
+feat(init): add project bootstrap and workflow generation engine
+
+==================================================
+PUSH
+==================================================
+
+git add .
+
+git commit
+
+git push origin main
+
+Only push when:
+
+✓ tests pass
+✓ build passes
+✓ lint passes
+✓ docs updated
+✓ reports generated
+
+==================================================
+PHASE COMPLETION
+==================================================
+
+Create:
+
+reports/phase4-completion.md
+
+Include:
+
+Completed work
+
+Pending work
+
+Known limitations
+
+Recommendations for Phase 5
+
+Then commit and push.
+
+END PHASE 4

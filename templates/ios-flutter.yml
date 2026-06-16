@@ -1,0 +1,33 @@
+name: iOS Flutter Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      flutter_channel:
+        description: "Flutter channel"
+        required: false
+        default: "stable"
+        type: string
+      build_mode:
+        description: "Build mode (debug/release)"
+        required: false
+        default: "release"
+        type: string
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: ${{ github.event.inputs.flutter_channel }}
+      - name: Get dependencies
+        run: flutter pub get
+      - name: Build iOS
+        run: flutter build ios --${{ github.event.inputs.build_mode }} --no-codesign
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: flutter-ios-build
+          path: build/ios/

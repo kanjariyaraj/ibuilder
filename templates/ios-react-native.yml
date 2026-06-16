@@ -1,0 +1,38 @@
+name: iOS React Native Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      entry_file:
+        description: "Entry file"
+        required: false
+        default: "index.js"
+        type: string
+      build_mode:
+        description: "Build mode (debug/release)"
+        required: false
+        default: "release"
+        type: string
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm install
+      - name: Build iOS
+        run: |
+          npx react-native bundle \
+            --platform ios \
+            --dev false \
+            --entry-file ${{ github.event.inputs.entry_file }} \
+            --bundle-output ios/main.jsbundle
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: rn-ios-build
+          path: ios/

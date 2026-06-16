@@ -1,0 +1,38 @@
+name: iOS Xcode Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      scheme:
+        description: "Xcode scheme"
+        required: true
+        type: string
+      configuration:
+        description: "Build configuration (Debug/Release)"
+        required: false
+        default: "Release"
+        type: string
+      destination:
+        description: "Destination platform"
+        required: false
+        default: "generic/platform=iOS"
+        type: string
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Xcode version
+        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+      - name: Build iOS app
+        run: |
+          xcodebuild -scheme "${{ github.event.inputs.scheme }}" \
+                     -configuration "${{ github.event.inputs.configuration }}" \
+                     -destination "${{ github.event.inputs.destination }}" \
+                     clean build
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-build
+          path: build/
