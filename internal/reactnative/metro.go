@@ -4,136 +4,180 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
+	"syscall"
 	"time"
 )
+
+type MetroStatus struct {
+	Running  bool   `json:"running"`
+	PID      int    `json:"pid,omitempty"`
+	Port     int    `json:"port"`
+	Host     string `json:"host"`
+	Uptime   string `json:"uptime,omitempty"`
+	Error    string `json:"error,omitempty"`
+}
 
 type MetroResult struct {
 	Success  bool      `json:"success"`
 	Action   string    `json:"action"`
 	PID      int       `json:"pid,omitempty"`
 	Port     int       `json:"port"`
-	Host     string    `json:"host,omitempty"`
 	Started  time.Time `json:"started_at,omitempty"`
 	Error    string    `json:"error,omitempty"`
 }
 
-func (s *Session) StartMetro() (*MetroResult, error) {
-	s.mu.Lock()
-	port := s.metroPort
-	s.mu.Unlock()
+func (s *Session) StartMetro() error {
+	if s.isMetroRunning() {
+		s.log.Info("metro bundler is already running", "port", s.metroPort)
+		return nil
+	}
 
-	s.log.Info("starting metro bundler", "port", port)
+	s.log.Info("starting metro bundler", "port", s.metroPort)
 
-	args := []string{"react-native", "start", "--port", fmt.Sprintf("%d", port), "--no-interactive"}
+	portStr := strconv.Itoa(s.metroPort)
+	args := []string{
+		"react-native", "start",
+		"--port", portStr,
+		"--no-interactive",
+	}
 
 	cmd := exec.Command("npx", args...)
 	cmd.Dir = s.projectDir
+	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
+
 	if err := cmd.Start(); err != nil {
-		return nil, fmt.Errorf("failed to start metro: %w", err)
+		return fmt.Errorf("failed to start metro: %w", err)
 	}
 
 	s.mu.Lock()
-	s.state = SessionMetroRunning
 	s.metroPID = cmd.Process.Pid
-	s.startedAt = time.Now()
+	s.state = SessionMetroRunning
 	s.mu.Unlock()
 
-	result := &MetroResult{
-		Success: true,
-		Action:  "start",
-		PID:     cmd.Process.Pid,
-		Port:    port,
-		Started: s.startedAt,
+	s.log.Info("metro bundler started", "pid", s.metroPID, "port", s.metroPort)
+
+	time.Sleep(3 * time.Second)
+
+	if !s.isMetroRunning() {
+		return fmt.Errorf("metro exited prematurely")
 	}
 
-	s.log.Info("metro started", "pid", cmd.Process.Pid, "port", port)
-	return result, nil
+	return nil
 }
 
-func (s *Session) StopMetro() (*MetroResult, error) {
+func (s *Session) StopMetro() error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	if s.metroPID == 0 {
-		result := &MetroResult{
-			Success: true,
-			Action:  "stop",
-			Port:    s.metroPort,
-			Error:   "metro not running",
-		}
-		return result, nil
-	}
-
-	proc, err := os.FindProcess(s.metroPID)
-	if err == nil {
-		proc.Kill()
-	}
-
-	s.metroPID = 0
-	s.state = SessionInactive
-
-	result := &MetroResult{
-		Success: true,
-		Action:  "stop",
-		Port:    s.metroPort,
-	}
-
-	s.log.Info("metro stopped")
-	return result, nil
+	return s.stopMetro()
 }
 
-func (s *Session) RestartMetro() (*MetroResult, error) {
-	s.log.Info("restarting metro bundler")
+func (s *Session) stopMetro() error {
+	if s.metroPID == 0 {
+		return nil
+	}
 
-	if _, err := s.StopMetro(); err != nil {
-		return nil, fmt.Errorf("failed to stop metro: %w", err)
+	s.log.Info("stopping metro bundler", "pid", s.metroPID)
+
+	process, err := os.FindProcess(s.metroPID)
+	if err != nil {
+		s.metroPID = 0
+		return nil
+	}
+
+	if err := process.Signal(syscall.SIGTERM); err != nil {
+		if err := process.Kill(); err != nil {
+			s.metroPID = 0
+			return fmt.Errorf("failed to stop metro: %w", err)
+		}
 	}
 
 	time.Sleep(1 * time.Second)
-
-	startResult, err := s.StartMetro()
-	if err != nil {
-		return nil, fmt.Errorf("failed to restart metro: %w", err)
-	}
-	startResult.Action = "restart"
-
-	s.log.Info("metro restarted", "port", startResult.Port)
-	return startResult, nil
+	s.metroPID = 0
+	s.state = SessionInactive
+	s.log.Info("metro bundler stopped")
+	return nil
 }
 
-func (s *Session) MetroStatus() *MetroResult {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
+func (s *Session) RestartMetro() error {
+	s.log.Info("restarting metro bundler")
 
-	running := true
-	if s.metroPID == 0 || s.state != SessionMetroRunning {
-		running = false
+	if err := s.StopMetro(); err != nil {
+		s.log.Error("failed to stop metro for restart", "error", err)
 	}
 
-	result := &MetroResult{
-		Success: running,
-		Action:  "status",
-		PID:     s.metroPID,
-		Port:    s.metroPort,
+	time.Sleep(2 * time.Second)
+
+	if err := s.StartMetro(); err != nil {
+		return fmt.Errorf("metro restart failed: %w", err)
 	}
 
-	if running {
-		result.Started = s.startedAt
-	}
-
-	return result
+	s.log.Info("metro bundler restarted")
+	return nil
 }
 
-func (s *Session) CheckMetroPort() error {
+func (s *Session) MetroStatus() MetroStatus {
 	s.mu.RLock()
+	running := s.isMetroRunning()
+	pid := s.metroPID
 	port := s.metroPort
 	s.mu.RUnlock()
 
-	cmd := exec.Command("lsof", "-i", fmt.Sprintf(":%d", port))
-	output, err := cmd.Output()
-	if err == nil && len(output) > 0 {
-		return fmt.Errorf("port %d is already in use:\n%s", port, strings.TrimSpace(string(output)))
+	status := MetroStatus{
+		Running: running,
+		PID:     pid,
+		Port:    port,
+		Host:    "localhost",
 	}
-	return nil
+
+	if running && !s.startedAt.IsZero() {
+		uptime := time.Since(s.startedAt).Round(time.Second)
+		status.Uptime = uptime.String()
+	}
+
+	return status
+}
+
+func (s *Session) isMetroRunning() bool {
+	if s.metroPID == 0 {
+		return false
+	}
+
+	process, err := os.FindProcess(s.metroPID)
+	if err != nil {
+		return false
+	}
+
+	if err := process.Signal(syscall.Signal(0)); err != nil {
+		return false
+	}
+
+	return true
+}
+
+func (s *Session) CheckPortConflict() (bool, int) {
+	portStr := strconv.Itoa(s.metroPort)
+
+	cmd := exec.Command("lsof", "-i", fmt.Sprintf(":%s", portStr))
+	output, err := cmd.Output()
+	if err != nil {
+		return false, 0
+	}
+
+	lines := strings.Split(strings.TrimSpace(string(output)), "\n")
+	if len(lines) > 1 {
+		for _, line := range lines[1:] {
+			fields := strings.Fields(line)
+			if len(fields) > 1 {
+				pid, _ := strconv.Atoi(fields[1])
+				if pid > 0 && pid != s.metroPID {
+					return true, pid
+				}
+			}
+		}
+	}
+
+	return false, 0
 }

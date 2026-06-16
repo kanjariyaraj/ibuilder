@@ -6,11 +6,11 @@ import (
 )
 
 type RecoveryResult struct {
-	Success  bool          `json:"success"`
-	Action   string        `json:"action"`
-	Duration time.Duration `json:"duration_ms"`
-	Attempts int           `json:"attempts"`
-	Error    string        `json:"error,omitempty"`
+	Success   bool          `json:"success"`
+	Action    string        `json:"action"`
+	Duration  time.Duration `json:"duration_ms"`
+	Attempts  int           `json:"attempts"`
+	Error     string        `json:"error,omitempty"`
 }
 
 func (s *Session) Recover() *RecoveryResult {
@@ -18,7 +18,7 @@ func (s *Session) Recover() *RecoveryResult {
 	s.state = SessionRecovering
 	s.mu.Unlock()
 
-	s.log.Info("starting RN session recovery")
+	s.log.Info("starting react native session recovery")
 	start := time.Now()
 
 	var lastErr error
@@ -34,26 +34,25 @@ func (s *Session) Recover() *RecoveryResult {
 			continue
 		}
 
-		portCheck := s.CheckMetroPort()
-		if portCheck != nil {
-			s.log.Warn("metro port conflict during recovery", "error", portCheck)
+		hasConflict, conflictingPID := s.CheckPortConflict()
+		if hasConflict {
+			s.log.Warn("port conflict detected", "port", s.metroPort, "conflictingPID", conflictingPID)
 		}
 
-		metroResult, metroErr := s.RestartMetro()
-		if metroErr != nil {
-			lastErr = metroErr
-			s.log.Error("recovery metro restart failed", "attempt", attempt, "error", metroErr)
-			time.Sleep(2 * time.Second)
-			continue
-		}
-
-		if metroResult.Success {
-			if _, err := s.DevMode(); err != nil {
+		if s.cfg.AutoStartMetro || s.state == SessionMetroRunning {
+			if err := s.StartMetro(); err != nil {
 				lastErr = err
-				s.log.Error("recovery dev mode failed", "attempt", attempt, "error", err)
+				s.log.Error("recovery metro start failed", "attempt", attempt, "error", err)
 				time.Sleep(2 * time.Second)
 				continue
 			}
+		}
+
+		if _, err := s.DevMode(); err != nil {
+			lastErr = err
+			s.log.Error("recovery dev mode failed", "attempt", attempt, "error", err)
+			time.Sleep(2 * time.Second)
+			continue
 		}
 
 		s.mu.Lock()
@@ -68,7 +67,7 @@ func (s *Session) Recover() *RecoveryResult {
 			Attempts: attempt,
 		}
 
-		s.log.Info("RN session recovered", "attempts", attempt, "duration", duration)
+		s.log.Info("react native session recovered", "attempts", attempt, "duration", duration)
 		return result
 	}
 
@@ -90,6 +89,6 @@ func (s *Session) Recover() *RecoveryResult {
 		Error:    errMsg,
 	}
 
-	s.log.Error("RN session recovery failed", "attempts", maxAttempts, "error", lastErr)
+	s.log.Error("react native session recovery failed", "attempts", maxAttempts, "error", lastErr)
 	return result
 }

@@ -13,7 +13,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func getReactNativeSession() (*reactnative.Session, *config.Config, error) {
+func getRNSession() (*reactnative.Session, *config.Config, error) {
 	path := cfgFile
 	if path == "" {
 		cwd, _ := os.Getwd()
@@ -44,7 +44,7 @@ var rnDevCmd = &cobra.Command{
 	Use:   "dev",
 	Short: "Start React Native development mode",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		session, cfg, err := getReactNativeSession()
+		session, cfg, err := getRNSession()
 		if err != nil {
 			return err
 		}
@@ -72,7 +72,7 @@ var rnDevCmd = &cobra.Command{
 		fmt.Println("React Native dev mode started!")
 		fmt.Printf("  PID:       %d\n", result.PID)
 		fmt.Printf("  Device:    %s\n", result.Device)
-		fmt.Printf("  Port:      %d\n", result.MetroPort)
+		fmt.Printf("  Metro Port: %d\n", result.MetroPort)
 		fmt.Printf("  Time:      %s\n", result.Started.Format(time.RFC3339))
 
 		return nil
@@ -83,7 +83,7 @@ var rnAttachCmd = &cobra.Command{
 	Use:   "attach",
 	Short: "Attach to a running React Native app",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		session, _, err := getReactNativeSession()
+		session, _, err := getRNSession()
 		if err != nil {
 			return err
 		}
@@ -103,7 +103,7 @@ var rnAttachCmd = &cobra.Command{
 		fmt.Println("Attached to React Native app!")
 		fmt.Printf("  PID:       %d\n", result.PID)
 		fmt.Printf("  Device:    %s\n", result.Device)
-		fmt.Printf("  Port:      %d\n", result.MetroPort)
+		fmt.Printf("  Metro Port: %d\n", result.MetroPort)
 
 		return nil
 	},
@@ -119,27 +119,20 @@ var rnMetroStartCmd = &cobra.Command{
 	Use:   "start",
 	Short: "Start Metro bundler",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		session, _, err := getReactNativeSession()
+		session, _, err := getRNSession()
 		if err != nil {
 			return err
 		}
 
-		cwd, _ := os.Getwd()
-		session.DetectRNProject(cwd)
-
-		port, _ := cmd.Flags().GetInt("port")
-		if port > 0 {
-			session.UpdateConfig(&config.ReactNativeSettings{MetroPort: port})
-		}
-
-		result, err := session.StartMetro()
-		if err != nil {
+		if err := session.StartMetro(); err != nil {
 			return fmt.Errorf("metro start failed: %w", err)
 		}
 
+		status := session.MetroStatus()
 		fmt.Println("Metro bundler started!")
-		fmt.Printf("  PID:  %d\n", result.PID)
-		fmt.Printf("  Port: %d\n", result.Port)
+		fmt.Printf("  PID:  %d\n", status.PID)
+		fmt.Printf("  Port: %d\n", status.Port)
+		fmt.Printf("  Host: %s\n", status.Host)
 		return nil
 	},
 }
@@ -148,13 +141,12 @@ var rnMetroStopCmd = &cobra.Command{
 	Use:   "stop",
 	Short: "Stop Metro bundler",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		session, _, err := getReactNativeSession()
+		session, _, err := getRNSession()
 		if err != nil {
 			return err
 		}
 
-		_, err = session.StopMetro()
-		if err != nil {
+		if err := session.StopMetro(); err != nil {
 			return fmt.Errorf("metro stop failed: %w", err)
 		}
 
@@ -167,22 +159,19 @@ var rnMetroRestartCmd = &cobra.Command{
 	Use:   "restart",
 	Short: "Restart Metro bundler",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		session, _, err := getReactNativeSession()
+		session, _, err := getRNSession()
 		if err != nil {
 			return err
 		}
 
-		cwd, _ := os.Getwd()
-		session.DetectRNProject(cwd)
-
-		result, err := session.RestartMetro()
-		if err != nil {
+		if err := session.RestartMetro(); err != nil {
 			return fmt.Errorf("metro restart failed: %w", err)
 		}
 
+		status := session.MetroStatus()
 		fmt.Println("Metro bundler restarted!")
-		fmt.Printf("  PID:  %d\n", result.PID)
-		fmt.Printf("  Port: %d\n", result.Port)
+		fmt.Printf("  PID:  %d\n", status.PID)
+		fmt.Printf("  Port: %d\n", status.Port)
 		return nil
 	},
 }
@@ -191,16 +180,22 @@ var rnMetroStatusCmd = &cobra.Command{
 	Use:   "status",
 	Short: "Check Metro bundler status",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		session, _, err := getReactNativeSession()
+		session, _, err := getRNSession()
 		if err != nil {
 			return err
 		}
 
 		status := session.MetroStatus()
-		if status.Success {
-			fmt.Printf("Metro is RUNNING (PID: %d, Port: %d)\n", status.PID, status.Port)
+		if status.Running {
+			fmt.Printf("Metro bundler is RUNNING\n")
+			fmt.Printf("  PID:    %d\n", status.PID)
+			fmt.Printf("  Port:   %d\n", status.Port)
+			fmt.Printf("  Host:   %s\n", status.Host)
+			if status.Uptime != "" {
+				fmt.Printf("  Uptime: %s\n", status.Uptime)
+			}
 		} else {
-			fmt.Println("Metro is STOPPED")
+			fmt.Println("Metro bundler is NOT running")
 		}
 		return nil
 	},
@@ -208,31 +203,33 @@ var rnMetroStatusCmd = &cobra.Command{
 
 var rnReloadCmd = &cobra.Command{
 	Use:   "reload",
-	Short: "Trigger React Native Fast Refresh or manual reload",
+	Short: "Trigger Fast Refresh or manual reload",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		session, _, err := getReactNativeSession()
+		session, _, err := getRNSession()
 		if err != nil {
 			return err
 		}
 
-		refresh, _ := cmd.Flags().GetBool("fast-refresh")
-		if refresh {
-			result, err := session.FastRefresh()
-			if err != nil {
-				return fmt.Errorf("fast refresh failed: %w", err)
-			}
-			fmt.Println("Fast refresh triggered!")
-			fmt.Printf("  Duration: %v\n", result.Duration)
-			return nil
+		mode, _ := cmd.Flags().GetString("mode")
+
+		var result *reactnative.ReloadResult
+		switch mode {
+		case "manual":
+			result, err = session.ManualReload()
+		case "device":
+			result, err = session.DeviceRefresh()
+		default:
+			result, err = session.FastRefresh()
 		}
 
-		result, err := session.ManualReload()
 		if err != nil {
-			return fmt.Errorf("manual reload failed: %w", err)
+			return fmt.Errorf("reload failed: %w", err)
 		}
 
-		fmt.Println("Manual reload triggered!")
+		fmt.Println("Reload completed!")
+		fmt.Printf("  Type:     %s\n", result.Type)
 		fmt.Printf("  Duration: %v\n", result.Duration)
+		fmt.Printf("  Output:   %s\n", result.Output)
 		return nil
 	},
 }
@@ -241,7 +238,7 @@ var rnLogsCmd = &cobra.Command{
 	Use:   "logs",
 	Short: "View React Native device logs",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		session, _, err := getReactNativeSession()
+		session, _, err := getRNSession()
 		if err != nil {
 			return err
 		}
@@ -316,7 +313,7 @@ var rnDoctorCmd = &cobra.Command{
 	Use:   "doctor",
 	Short: "Check React Native development environment",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		session, _, err := getReactNativeSession()
+		session, _, err := getRNSession()
 		if err != nil {
 			return err
 		}
@@ -358,43 +355,32 @@ var rnInstallCmd = &cobra.Command{
 	Use:   "install",
 	Short: "Install React Native app on device",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		session, _, err := getReactNativeSession()
+		session, _, err := getRNSession()
 		if err != nil {
 			return err
-		}
-
-		cwd, _ := os.Getwd()
-		if _, err := session.DetectRNProject(cwd); err != nil {
-			return fmt.Errorf("not a React Native project: %w", err)
-		}
-
-		device, _ := cmd.Flags().GetString("device")
-		if device != "" {
-			session.SetDeviceID(device)
 		}
 
 		artifact, _ := cmd.Flags().GetString("artifact")
 
 		var result *reactnative.InstallResult
 		if artifact != "" {
-			result, err = session.InstallArtifact(artifact)
+			result, err = session.InstallSpecificBuild(artifact)
 		} else {
 			result, err = session.InstallLatest()
 		}
+
 		if err != nil {
 			return fmt.Errorf("install failed: %w", err)
 		}
 
-		fmt.Println("React Native app installed!")
-		fmt.Printf("  Artifact: %s\n", result.Artifact)
-		fmt.Printf("  Device:   %s\n", result.Device)
-		fmt.Printf("  Time:     %s\n", result.Installed.Format(time.RFC3339))
+		fmt.Println("Install completed!")
+		fmt.Printf("  Action: %s\n", result.Action)
+		fmt.Printf("  Output: %s\n", result.Output)
 
-		verified, _ := session.VerifyInstall()
-		if verified {
-			fmt.Println("  Status:   VERIFIED")
+		if err := session.VerifyInstallation(); err != nil {
+			fmt.Printf("  Warning: %v\n", err)
 		} else {
-			fmt.Println("  Status:   COULD NOT VERIFY")
+			fmt.Println("  Installation verified.")
 		}
 
 		return nil
@@ -421,9 +407,7 @@ func init() {
 
 	rnAttachCmd.Flags().String("device", "", "Target device ID")
 
-	rnMetroStartCmd.Flags().Int("port", 8081, "Metro bundler port")
-
-	rnReloadCmd.Flags().Bool("fast-refresh", false, "Trigger fast refresh instead of manual reload")
+	rnReloadCmd.Flags().String("mode", "fast", "Reload mode: fast, manual, device")
 
 	rnLogsCmd.Flags().Bool("stream", false, "Stream live logs")
 	rnLogsCmd.Flags().String("save", "", "Save logs to directory")
@@ -431,6 +415,5 @@ func init() {
 	rnLogsCmd.Flags().String("search", "", "Search logs")
 	rnLogsCmd.Flags().Duration("since", 0, "Show logs since duration")
 
-	rnInstallCmd.Flags().String("device", "", "Target device ID")
-	rnInstallCmd.Flags().String("artifact", "", "Path to custom build artifact")
+	rnInstallCmd.Flags().String("artifact", "", "Path to specific build artifact")
 }

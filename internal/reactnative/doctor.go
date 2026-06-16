@@ -2,6 +2,7 @@ package reactnative
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 	"strings"
 )
@@ -31,11 +32,11 @@ func (s *Session) Doctor() DoctorReport {
 		Checks: []HealthCheck{},
 	}
 
-	report.Checks = append(report.Checks, s.checkNode())
-	report.Checks = append(report.Checks, s.checkNPM())
-	report.Checks = append(report.Checks, s.checkProject())
+	report.Checks = append(report.Checks, s.checkNodeJS())
+	report.Checks = append(report.Checks, s.checkPackageManager())
+	report.Checks = append(report.Checks, s.checkRNProject())
 	report.Checks = append(report.Checks, s.checkDependencies())
-	report.Checks = append(report.Checks, s.checkMetro())
+	report.Checks = append(report.Checks, s.checkMetroCLI())
 	report.Checks = append(report.Checks, s.checkDevices())
 
 	for _, ch := range report.Checks {
@@ -48,7 +49,7 @@ func (s *Session) Doctor() DoctorReport {
 	return report
 }
 
-func (s *Session) checkNode() HealthCheck {
+func (s *Session) checkNodeJS() HealthCheck {
 	cmd := exec.Command("node", "--version")
 	output, err := cmd.Output()
 	if err != nil {
@@ -63,36 +64,53 @@ func (s *Session) checkNode() HealthCheck {
 	return HealthCheck{
 		Name:    "Node.js",
 		Status:  StatusHealthy,
-		Message: fmt.Sprintf("Node %s installed", strings.TrimSpace(string(output))),
+		Message: fmt.Sprintf("Node.js %s installed", strings.TrimSpace(string(output))),
 	}
 }
 
-func (s *Session) checkNPM() HealthCheck {
+func (s *Session) checkPackageManager() HealthCheck {
+	hasNPM := true
 	cmd := exec.Command("npm", "--version")
-	output, err := cmd.Output()
-	if err != nil {
+	if err := cmd.Run(); err != nil {
+		hasNPM = false
+	}
+
+	if !hasNPM {
 		return HealthCheck{
-			Name:    "npm",
+			Name:    "Package Manager",
 			Status:  StatusFailure,
-			Message: "npm is not installed or not in PATH",
+			Message: "npm is not installed",
 			Suggest: "npm is bundled with Node.js — reinstall Node.js",
 		}
 	}
 
+	npmVer, _ := s.CheckNPM()
+	var pmDetails string
+	yarnVer, _ := s.CheckYarn()
+	pnpmVer, _ := s.CheckPNPM()
+
+	pmDetails = fmt.Sprintf("npm %s", npmVer)
+	if yarnVer != "" {
+		pmDetails += fmt.Sprintf(", yarn %s", yarnVer)
+	}
+	if pnpmVer != "" {
+		pmDetails += fmt.Sprintf(", pnpm %s", pnpmVer)
+	}
+
 	return HealthCheck{
-		Name:    "npm",
+		Name:    "Package Manager",
 		Status:  StatusHealthy,
-		Message: fmt.Sprintf("npm %s installed", strings.TrimSpace(string(output))),
+		Message: pmDetails,
 	}
 }
 
-func (s *Session) checkProject() HealthCheck {
+func (s *Session) checkRNProject() HealthCheck {
 	if s.projectDir == "" {
 		return HealthCheck{
 			Name:    "React Native Project",
 			Status:  StatusWarning,
 			Message: "No project directory set",
-			Suggest: "Run 'builder rn dev' from within an RN project directory",
+			Suggest: "Run 'builder rn dev' from within a React Native project directory",
 		}
 	}
 
@@ -102,7 +120,7 @@ func (s *Session) checkProject() HealthCheck {
 			Name:    "React Native Project",
 			Status:  StatusFailure,
 			Message: fmt.Sprintf("Invalid project: %v", err),
-			Suggest: "Ensure the directory contains a React Native project with package.json containing react-native and ios/",
+			Suggest: "Ensure the directory contains a valid React Native iOS project with package.json (containing react-native dependency) and ios/",
 		}
 	}
 	if !valid {
@@ -110,7 +128,7 @@ func (s *Session) checkProject() HealthCheck {
 			Name:    "React Native Project",
 			Status:  StatusFailure,
 			Message: "Not a valid React Native project",
-			Suggest: "Run 'npx react-native init' or navigate to an RN project directory",
+			Suggest: "Run 'npx react-native init' or navigate to a React Native project directory",
 		}
 	}
 
@@ -131,29 +149,28 @@ func (s *Session) checkDependencies() HealthCheck {
 	}
 
 	nodeModules := s.projectDir + "/node_modules"
-	if _, err := exec.Command("test", "-d", nodeModules).CombinedOutput(); err != nil {
+	if _, err := os.Stat(nodeModules); os.IsNotExist(err) {
 		return HealthCheck{
 			Name:    "Dependencies",
 			Status:  StatusWarning,
 			Message: "node_modules not found — dependencies not installed",
-			Suggest: "Run 'npm install' in your project directory",
+			Suggest: "Run 'npm install' or 'yarn install' in your project directory",
 		}
 	}
 
 	return HealthCheck{
 		Name:    "Dependencies",
 		Status:  StatusHealthy,
-		Message: "Dependencies installed",
+		Message: "node_modules present",
 	}
 }
 
-func (s *Session) checkMetro() HealthCheck {
-	cmd := exec.Command("npx", "--yes", "react-native", "--help")
-	if err := cmd.Run(); err != nil {
+func (s *Session) checkMetroCLI() HealthCheck {
+	if !s.CheckMetro() {
 		return HealthCheck{
 			Name:    "Metro Bundler",
 			Status:  StatusWarning,
-			Message: "npx react-native not available",
+			Message: "Metro CLI not detected",
 			Suggest: "Ensure react-native is installed in your project dependencies",
 		}
 	}
@@ -161,28 +178,26 @@ func (s *Session) checkMetro() HealthCheck {
 	return HealthCheck{
 		Name:    "Metro Bundler",
 		Status:  StatusHealthy,
-		Message: fmt.Sprintf("Metro available (port %d)", s.metroPort),
+		Message: "Metro CLI available",
 	}
 }
 
 func (s *Session) checkDevices() HealthCheck {
-	args := []string{"react-native", "list-devices", "--json"}
-	cmd := exec.Command("npx", args...)
-	cmd.Dir = s.projectDir
+	cmd := exec.Command("npx", "react-native", "list-devices")
 	output, err := cmd.Output()
 	if err != nil {
 		return HealthCheck{
 			Name:    "Devices",
 			Status:  StatusWarning,
 			Message: "Could not detect connected devices",
-			Suggest: "Connect a device via MobAI or USB, then run 'npx react-native list-devices'",
+			Suggest: "Connect a device via MobAI or USB, then check with 'npx react-native list-devices'",
 		}
 	}
 
 	lines := strings.Split(strings.TrimSpace(string(output)), "\n")
 	deviceCount := 0
 	for _, line := range lines {
-		if strings.Contains(line, "device") || strings.Contains(line, "Device") {
+		if strings.Contains(line, "device") || strings.Contains(line, "emulator") {
 			deviceCount++
 		}
 	}

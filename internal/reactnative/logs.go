@@ -32,12 +32,12 @@ func (s *Session) FetchLogs(filter *LogFilter) ([]LogEntry, error) {
 		return nil, fmt.Errorf("no project directory set")
 	}
 
-	args := []string{"react-native", "log-ios", "--json"}
+	args := []string{"react-native", "log-ios"}
 	cmd := exec.Command("npx", args...)
 	cmd.Dir = projectDir
 	output, err := cmd.Output()
 	if err != nil {
-		return nil, fmt.Errorf("failed to fetch RN logs: %w", err)
+		return nil, fmt.Errorf("failed to fetch react native logs: %w", err)
 	}
 
 	logs := parseLogOutput(string(output), filter)
@@ -58,7 +58,7 @@ func (s *Session) StreamLogs(stopChan chan struct{}) (chan LogEntry, error) {
 	go func() {
 		defer close(logChan)
 
-		args := []string{"react-native", "log-ios", "--json", "--follow"}
+		args := []string{"react-native", "log-ios"}
 		cmd := exec.Command("npx", args...)
 		cmd.Dir = projectDir
 
@@ -109,7 +109,7 @@ func (s *Session) SaveLogs(logs []LogEntry, outputDir string) (string, error) {
 		return "", fmt.Errorf("failed to create log directory: %w", err)
 	}
 
-	filename := fmt.Sprintf("rn_logs_%s.txt", s.Timestamp())
+	filename := fmt.Sprintf("react_native_logs_%s.txt", s.Timestamp())
 	path := filepath.Join(outputDir, filename)
 
 	f, err := os.Create(path)
@@ -154,9 +154,6 @@ func parseLogOutput(output string, filter *LogFilter) []LogEntry {
 			if filter.Since > 0 && time.Since(entry.Timestamp) > filter.Since {
 				continue
 			}
-			if filter.Tag != "" && !strings.Contains(entry.Message, filter.Tag) {
-				continue
-			}
 		}
 
 		logs = append(logs, entry)
@@ -170,7 +167,7 @@ func detectLogLevel(msg string) string {
 	switch {
 	case strings.Contains(upper, "ERROR") || strings.Contains(upper, "FATAL"):
 		return "ERROR"
-	case strings.Contains(upper, "WARN"):
+	case strings.Contains(upper, "WARN") || strings.Contains(upper, "WARNING"):
 		return "WARN"
 	case strings.Contains(upper, "DEBUG"):
 		return "DEBUG"

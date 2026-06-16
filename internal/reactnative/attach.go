@@ -21,9 +21,9 @@ func (s *Session) Attach(deviceID string) (*AttachResult, error) {
 	s.state = SessionStarting
 	s.mu.Unlock()
 
-	s.log.Info("attaching to RN app", "device", deviceID)
+	s.log.Info("attaching to react native app", "device", deviceID)
 
-	args := []string{"react-native", "start", "--json"}
+	args := []string{"react-native", "start", "--no-interactive"}
 	if deviceID != "" {
 		args = append(args, "--device", deviceID)
 	}
@@ -35,7 +35,7 @@ func (s *Session) Attach(deviceID string) (*AttachResult, error) {
 		s.mu.Lock()
 		s.state = SessionInactive
 		s.mu.Unlock()
-		return nil, fmt.Errorf("attach failed: %w", err)
+		return nil, fmt.Errorf("react-native attach failed: %w", err)
 	}
 
 	pid := 0
@@ -69,7 +69,7 @@ func (s *Session) Attach(deviceID string) (*AttachResult, error) {
 		AttachedAt: s.startedAt,
 	}
 
-	s.log.Info("attached to RN app", "pid", pid, "device", device)
+	s.log.Info("attached to react native app", "pid", pid)
 	return result, nil
 }
 
@@ -82,6 +82,6 @@ func (s *Session) Detach() error {
 	}
 
 	s.state = SessionInactive
-	s.log.Info("detached from RN app")
+	s.log.Info("detached from react native app")
 	return nil
 }

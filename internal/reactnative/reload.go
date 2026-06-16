@@ -8,39 +8,37 @@ import (
 )
 
 type ReloadResult struct {
-	Success  bool          `json:"success"`
-	Action   string        `json:"action"`
-	Duration time.Duration `json:"duration_ms"`
-	Error    string        `json:"error,omitempty"`
+	Success    bool          `json:"success"`
+	Type       string        `json:"type"`
+	Duration   time.Duration `json:"duration_ms"`
+	Output     string        `json:"output"`
+	Error      string        `json:"error,omitempty"`
 }
 
 func (s *Session) FastRefresh() (*ReloadResult, error) {
 	s.mu.RLock()
 	if s.state != SessionActive && s.state != SessionAttached && s.state != SessionMetroRunning {
 		s.mu.RUnlock()
-		return nil, fmt.Errorf("no active RN session — start one with 'rn dev' or 'rn attach'")
+		return nil, fmt.Errorf("no active react native session — start dev mode first")
 	}
-	port := s.metroPort
-	s.mu.RUnlock()
 
 	if !s.cfg.FastRefresh {
+		s.mu.RUnlock()
 		return nil, fmt.Errorf("fast refresh is disabled in configuration")
 	}
+	s.mu.RUnlock()
 
-	s.log.Info("triggering fast refresh")
+	s.log.Info("triggering fast refresh via metro")
 	start := time.Now()
 
-	resp, err := http.Post(
-		fmt.Sprintf("http://localhost:%d/onchange", port),
-		"application/json",
-		strings.NewReader(`{"changes":["__fast_refresh__"]}`),
-	)
+	url := fmt.Sprintf("http://localhost:%d/onchange", s.metroPort)
+	resp, err := http.Post(url, "application/json", nil)
 	duration := time.Since(start)
 
 	if err != nil {
 		result := &ReloadResult{
 			Success:  false,
-			Action:   "fast_refresh",
+			Type:     "fast_refresh",
 			Duration: duration,
 			Error:    err.Error(),
 		}
@@ -49,20 +47,11 @@ func (s *Session) FastRefresh() (*ReloadResult, error) {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		result := &ReloadResult{
-			Success:  false,
-			Action:   "fast_refresh",
-			Duration: duration,
-			Error:    fmt.Sprintf("metro returned status %d", resp.StatusCode),
-		}
-		return result, fmt.Errorf("fast refresh failed: metro returned %d", resp.StatusCode)
-	}
-
 	result := &ReloadResult{
 		Success:  true,
-		Action:   "fast_refresh",
+		Type:     "fast_refresh",
 		Duration: duration,
+		Output:   fmt.Sprintf("HTTP %d", resp.StatusCode),
 	}
 
 	s.log.Info("fast refresh triggered", "duration", duration)
@@ -71,27 +60,23 @@ func (s *Session) FastRefresh() (*ReloadResult, error) {
 
 func (s *Session) ManualReload() (*ReloadResult, error) {
 	s.mu.RLock()
-	if s.state != SessionActive && s.state != SessionAttached && s.state != SessionMetroRunning {
+	if s.state != SessionActive && s.state != SessionAttached {
 		s.mu.RUnlock()
-		return nil, fmt.Errorf("no active RN session — start one with 'rn dev' or 'rn attach'")
+		return nil, fmt.Errorf("no active react native session")
 	}
-	port := s.metroPort
 	s.mu.RUnlock()
 
 	s.log.Info("triggering manual reload")
 	start := time.Now()
 
-	resp, err := http.Post(
-		fmt.Sprintf("http://localhost:%d/reload", port),
-		"application/json",
-		nil,
-	)
+	url := fmt.Sprintf("http://localhost:%d/reload", s.metroPort)
+	resp, err := http.Post(url, "application/json", strings.NewReader(`{"reload":true}`))
 	duration := time.Since(start)
 
 	if err != nil {
 		result := &ReloadResult{
 			Success:  false,
-			Action:   "manual_reload",
+			Type:     "manual_reload",
 			Duration: duration,
 			Error:    err.Error(),
 		}
@@ -100,22 +85,51 @@ func (s *Session) ManualReload() (*ReloadResult, error) {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		result := &ReloadResult{
-			Success:  false,
-			Action:   "manual_reload",
-			Duration: duration,
-			Error:    fmt.Sprintf("metro returned status %d", resp.StatusCode),
-		}
-		return result, fmt.Errorf("manual reload failed: metro returned %d", resp.StatusCode)
-	}
-
 	result := &ReloadResult{
 		Success:  true,
-		Action:   "manual_reload",
+		Type:     "manual_reload",
 		Duration: duration,
+		Output:   fmt.Sprintf("HTTP %d", resp.StatusCode),
 	}
 
 	s.log.Info("manual reload triggered", "duration", duration)
+	return result, nil
+}
+
+func (s *Session) DeviceRefresh() (*ReloadResult, error) {
+	s.mu.RLock()
+	if s.state != SessionActive && s.state != SessionAttached {
+		s.mu.RUnlock()
+		return nil, fmt.Errorf("no active react native session")
+	}
+	s.mu.RUnlock()
+
+	s.log.Info("sending device refresh signal")
+	start := time.Now()
+
+	url := fmt.Sprintf("http://localhost:%d/device-refresh", s.metroPort)
+	resp, err := http.Post(url, "application/json", nil)
+	duration := time.Since(start)
+
+	if err != nil {
+		result := &ReloadResult{
+			Success:  false,
+			Type:     "device_refresh",
+			Duration: duration,
+			Error:    err.Error(),
+		}
+		s.log.Error("device refresh failed", "error", err)
+		return result, fmt.Errorf("device refresh failed: %w", err)
+	}
+	defer resp.Body.Close()
+
+	result := &ReloadResult{
+		Success:  true,
+		Type:     "device_refresh",
+		Duration: duration,
+		Output:   fmt.Sprintf("HTTP %d", resp.StatusCode),
+	}
+
+	s.log.Info("device refresh triggered", "duration", duration)
 	return result, nil
 }

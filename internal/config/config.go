@@ -33,6 +33,13 @@ type MobaiSettings struct {
 	ConnectionTimeout int    `json:"connection_timeout"`
 }
 
+type AISettings struct {
+	Enabled             bool    `json:"enabled"`
+	AutoFix             bool    `json:"auto_fix"`
+	ReportFormat        string  `json:"report_format"`
+	ConfidenceThreshold float64 `json:"confidence_threshold"`
+}
+
 type FlutterSettings struct {
 	Enabled     bool   `json:"enabled"`
 	Channel     string `json:"channel"`
@@ -82,6 +89,7 @@ type Config struct {
 	Signing         SigningSettings     `json:"signing"`
 	MobAI           MobAISettings       `json:"mob_ai"`
 	Mobai           MobaiSettings       `json:"mobai"`
+	AI              AISettings          `json:"ai"`
 	Flutter         FlutterSettings     `json:"flutter"`
 	ReactNative     ReactNativeSettings `json:"react_native"`
 }
@@ -121,6 +129,12 @@ func Default() *Config {
 			Device:            "",
 			AutoReconnect:     true,
 			ConnectionTimeout: 30,
+		},
+		AI: AISettings{
+			Enabled:             true,
+			AutoFix:             false,
+			ReportFormat:        "markdown",
+			ConfidenceThreshold: 0.8,
 		},
 		Flutter: FlutterSettings{
 			Enabled:     false,

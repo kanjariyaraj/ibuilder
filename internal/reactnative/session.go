@@ -2,18 +2,17 @@ package reactnative
 
 import (
 	"fmt"
-	"os"
 	"time"
 )
 
 type SessionInfo struct {
-	State      SessionState `json:"state"`
-	ProjectDir string       `json:"project_dir"`
-	DeviceID   string       `json:"device_id,omitempty"`
-	MetroPID   int          `json:"metro_pid,omitempty"`
-	MetroPort  int          `json:"metro_port,omitempty"`
-	Uptime     string       `json:"uptime"`
-	StartedAt  time.Time    `json:"started_at,omitempty"`
+	State       SessionState `json:"state"`
+	ProjectDir  string       `json:"project_dir"`
+	DeviceID    string       `json:"device_id,omitempty"`
+	MetroPID    int          `json:"metro_pid,omitempty"`
+	MetroPort   int          `json:"metro_port,omitempty"`
+	Uptime      string       `json:"uptime"`
+	StartedAt   time.Time    `json:"started_at,omitempty"`
 }
 
 func (s *Session) SessionInfo() SessionInfo {
@@ -42,17 +41,13 @@ func (s *Session) StopSession() error {
 	defer s.mu.Unlock()
 
 	if s.metroPID != 0 {
-		proc, err := os.FindProcess(s.metroPID)
-		if err == nil {
-			proc.Kill()
-		}
-		s.metroPID = 0
+		s.stopMetro()
 	}
 
 	s.state = SessionInactive
 	s.deviceID = ""
 
-	s.log.Info("RN session stopped")
+	s.log.Info("react native session stopped")
 	return nil
 }
 
@@ -71,6 +66,6 @@ func FormatSessionInfo(info SessionInfo) string {
   Metro Port:  %d
   Uptime:      %s
   Started:     %s
-`, info.State, info.ProjectDir, info.DeviceID, info.MetroPID, info.MetroPort, info.Uptime,
-		info.StartedAt.Format(time.RFC3339))
+`, info.State, info.ProjectDir, info.DeviceID, info.MetroPID, info.MetroPort,
+		info.Uptime, info.StartedAt.Format(time.RFC3339))
 }
