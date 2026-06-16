@@ -1,0 +1,484 @@
+PROJECT: Builder
+
+Repository:
+https://github.com/kanjariyaraj/Builder.git
+
+==================================================
+PHASE 2
+GITHUB AUTHENTICATION & REPOSITORY MANAGEMENT
+==================================================
+
+Before starting:
+
+1. Pull latest repository.
+2. Read entire codebase.
+3. Read Phase 1 reports.
+4. Read architecture plan.
+5. Read README.
+6. Read docs.
+7. Verify build passes.
+8. Verify tests pass.
+
+Create:
+
+reports/phase2-analysis.md
+
+==================================================
+PHASE OBJECTIVE
+==================================================
+
+Builder must be able to:
+
+✓ Authenticate with GitHub
+
+✓ Store credentials securely
+
+✓ Validate authentication
+
+✓ Connect repository
+
+✓ Read repository metadata
+
+✓ Verify permissions
+
+✓ Support future workflow dispatch
+
+This phase creates the GitHub foundation for all future features.
+
+==================================================
+IMPLEMENT COMMANDS
+==================================================
+
+builder auth github
+
+builder auth status
+
+builder auth logout
+
+builder repo connect
+
+builder repo info
+
+builder repo validate
+
+==================================================
+AUTHENTICATION SYSTEM
+==================================================
+
+Implement GitHub Device Flow.
+
+Requirements:
+
+Open browser automatically if possible.
+
+Fallback to manual flow.
+
+Display code clearly.
+
+Wait for authorization.
+
+Handle cancellation.
+
+Handle timeout.
+
+Handle invalid token.
+
+Handle revoked token.
+
+Handle expired token.
+
+==================================================
+TOKEN STORAGE
+==================================================
+
+Store credentials locally.
+
+Location:
+
+Windows:
+%USERPROFILE%\.builder\
+
+Linux:
+~/.builder/
+
+WSL:
+~/.builder/
+
+Files:
+
+github.json
+
+Requirements:
+
+Secure permissions
+
+Validation
+
+Corruption detection
+
+Recovery support
+
+==================================================
+GITHUB CLIENT
+==================================================
+
+Create:
+
+internal/github/
+
+Modules:
+
+auth.go
+
+client.go
+
+repo.go
+
+workflow.go
+
+token.go
+
+validation.go
+
+Requirements:
+
+Reusable APIs
+
+Future workflow support
+
+Future artifact support
+
+Future release support
+
+==================================================
+REPOSITORY CONNECTION
+==================================================
+
+Command:
+
+builder repo connect
+
+Detect:
+
+git remote
+
+origin
+
+current branch
+
+repository owner
+
+repository name
+
+Validate:
+
+Repository exists
+
+User has access
+
+Repository reachable
+
+Save in:
+
+builder.json
+
+==================================================
+REPOSITORY INFO
+==================================================
+
+Command:
+
+builder repo info
+
+Output:
+
+Owner
+
+Repository
+
+Default branch
+
+Visibility
+
+Permissions
+
+Actions enabled
+
+==================================================
+REPOSITORY VALIDATION
+==================================================
+
+Command:
+
+builder repo validate
+
+Verify:
+
+Repository exists
+
+Actions enabled
+
+Permission sufficient
+
+Authentication valid
+
+API accessible
+
+==================================================
+CONFIG UPDATES
+==================================================
+
+Update builder.json
+
+Add:
+
+{
+  "repo": {
+    "owner": "",
+    "name": "",
+    "branch": "main"
+  },
+  "github": {
+    "authenticated": true
+  }
+}
+
+Implement validation.
+
+==================================================
+ERROR HANDLING
+==================================================
+
+Handle:
+
+No internet
+
+GitHub unavailable
+
+Invalid repo
+
+Permission denied
+
+Rate limits
+
+Expired auth
+
+Corrupt token
+
+Missing config
+
+Create friendly messages.
+
+==================================================
+LOGGING
+==================================================
+
+Log:
+
+Auth start
+
+Auth success
+
+Auth failure
+
+Repo connect
+
+Repo validation
+
+API requests
+
+Create debug mode support.
+
+==================================================
+TESTING REQUIREMENTS
+==================================================
+
+Create:
+
+Unit tests
+
+Integration tests
+
+Mock GitHub API tests
+
+Repository tests
+
+Token tests
+
+Config tests
+
+==================================================
+TEST EXECUTION RULE
+==================================================
+
+Run:
+
+go test ./...
+
+Fix failures.
+
+Run again.
+
+Run lint.
+
+Fix lint.
+
+Run lint again.
+
+Run build.
+
+Verify build.
+
+Run build again.
+
+Testing must happen twice.
+
+==================================================
+DOCUMENTATION
+==================================================
+
+Update:
+
+README.md
+
+Create:
+
+docs/github-authentication.md
+
+docs/repository-management.md
+
+docs/troubleshooting-auth.md
+
+Include:
+
+Setup
+
+Authentication flow
+
+Common problems
+
+Recovery steps
+
+==================================================
+REPORTS
+==================================================
+
+Generate:
+
+reports/phase2-report.md
+
+reports/phase2-testing.md
+
+reports/phase2-bugs.md
+
+reports/phase2-summary.md
+
+Include:
+
+Architecture decisions
+
+Files created
+
+Tests executed
+
+Issues fixed
+
+Future recommendations
+
+==================================================
+OPEN SOURCE QUALITY
+==================================================
+
+Requirements:
+
+Contributor-friendly code
+
+SOLID
+
+Clean architecture
+
+Reusable modules
+
+No dead code
+
+No debug leftovers
+
+No temporary hacks
+
+Production ready only
+
+==================================================
+FINAL VERIFICATION
+==================================================
+
+Verify:
+
+builder auth github
+
+builder auth status
+
+builder auth logout
+
+builder repo connect
+
+builder repo info
+
+builder repo validate
+
+All commands working.
+
+No build failures.
+
+No test failures.
+
+No lint failures.
+
+==================================================
+COMMIT
+==================================================
+
+Generate detailed commit message.
+
+Example:
+
+feat(github): implement device flow authentication and repository management system
+
+==================================================
+PUSH
+==================================================
+
+git add .
+
+git commit
+
+git push origin main
+
+Push only after:
+
+✓ tests pass
+✓ lint passes
+✓ build passes
+✓ docs updated
+✓ reports generated
+
+==================================================
+PHASE COMPLETION
+==================================================
+
+Create:
+
+reports/phase2-completion.md
+
+Include:
+
+Completed work
+
+Pending work
+
+Known limitations
+
+Phase 3 recommendations
+
+Then commit and push.
+
+END PHASE 2

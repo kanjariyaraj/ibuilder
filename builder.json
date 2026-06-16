@@ -1,0 +1,26 @@
+{
+  "project_name": "Builder",
+  "repository": "https://github.com/kanjariyaraj/Builder.git",
+  "ios": {
+    "minimum_version": "15.0",
+    "target_version": "17.0",
+    "devices": ["iPhone", "iPad"]
+  },
+  "signing": {
+    "team_id": "",
+    "provisioning_profile": "",
+    "certificate": ""
+  },
+  "mob_ai": {
+    "enabled": false,
+    "api_key": ""
+  },
+  "flutter": {
+    "enabled": false,
+    "channel": "stable"
+  },
+  "react_native": {
+    "enabled": false,
+    "entry_file": "index.js"
+  }
+}

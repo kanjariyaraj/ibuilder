@@ -1,0 +1,15 @@
+# Binaries
+builder
+*.exe
+*.test
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dependencies
+vendor/

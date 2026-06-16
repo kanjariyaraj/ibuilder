@@ -1,0 +1,522 @@
+PROJECT: Builder
+
+Repository:
+https://github.com/kanjariyaraj/Builder.git
+
+==================================================
+PHASE 1
+FOUNDATION & PROJECT ARCHITECTURE
+==================================================
+
+You are the lead architect, senior Go engineer,
+senior DevOps engineer, senior QA engineer,
+senior open-source maintainer and release manager.
+
+Your responsibility is to establish the complete
+foundation for Builder.
+
+Builder Goal:
+
+Build, Test, Sign and Release iOS Apps From Anywhere.
+
+Builder is an open-source Go CLI that allows developers
+to build iOS apps from Windows, Linux and WSL using
+GitHub-hosted macOS runners and real iPhone devices.
+
+==================================================
+MANDATORY EXECUTION FLOW
+==================================================
+
+Never immediately start coding.
+
+Follow this workflow:
+
+STEP 1
+Analyze Repository
+
+STEP 2
+Create Architecture Plan
+
+STEP 3
+Create TODO List
+
+STEP 4
+Create Foundation
+
+STEP 5
+Create Tests
+
+STEP 6
+Run Tests
+
+STEP 7
+Fix Problems
+
+STEP 8
+Run Tests Again
+
+STEP 9
+Update Documentation
+
+STEP 10
+Generate Reports
+
+STEP 11
+Commit
+
+STEP 12
+Push
+
+Do not skip any step.
+
+==================================================
+REPOSITORY ANALYSIS
+==================================================
+
+Before coding:
+
+Analyze entire repository.
+
+Read:
+
+README.md
+
+docs/
+
+.github/
+
+existing source code
+
+existing workflows
+
+existing examples
+
+existing reports
+
+Create:
+
+reports/repository-analysis.md
+
+Include:
+
+Current structure
+
+Missing structure
+
+Risks
+
+Recommended architecture
+
+Technical debt
+
+Improvement opportunities
+
+==================================================
+ARCHITECTURE DESIGN
+==================================================
+
+Create architecture proposal.
+
+Generate:
+
+reports/architecture-plan.md
+
+Design:
+
+builder/
+
+cmd/
+
+internal/
+
+pkg/
+
+docs/
+
+reports/
+
+templates/
+
+examples/
+
+tests/
+
+roadmap/
+
+Define responsibilities for each directory.
+
+==================================================
+PHASE 1 DELIVERABLES
+==================================================
+
+Create foundational CLI.
+
+Implement:
+
+builder
+
+builder version
+
+builder doctor
+
+builder config
+
+==================================================
+CLI FRAMEWORK
+==================================================
+
+Use:
+
+github.com/spf13/cobra
+
+Requirements:
+
+Root command
+
+Version command
+
+Doctor command
+
+Config command
+
+Help command
+
+Clean CLI UX
+
+Consistent output
+
+Cross-platform support
+
+==================================================
+CONFIGURATION SYSTEM
+==================================================
+
+Create:
+
+builder.json
+
+Support:
+
+Project info
+
+Repository info
+
+iOS settings
+
+Signing settings
+
+MobAI settings
+
+Flutter settings
+
+React Native settings
+
+Create:
+
+internal/config/
+
+Features:
+
+Load config
+
+Save config
+
+Validate config
+
+Default values
+
+Config schema
+
+==================================================
+LOGGING SYSTEM
+==================================================
+
+Create:
+
+internal/logger/
+
+Requirements:
+
+Info logs
+
+Warning logs
+
+Error logs
+
+Debug logs
+
+Structured output
+
+Cross-platform support
+
+==================================================
+ERROR HANDLING
+==================================================
+
+Create:
+
+internal/errors/
+
+Requirements:
+
+Reusable errors
+
+Helpful messages
+
+Error wrapping
+
+Context support
+
+==================================================
+DOCTOR COMMAND
+==================================================
+
+Implement:
+
+builder doctor
+
+Checks:
+
+Git
+
+GitHub CLI
+
+Go version
+
+Node
+
+Flutter
+
+Java
+
+Environment variables
+
+Builder configuration
+
+Output:
+
+Healthy
+
+Warning
+
+Failure
+
+Summary
+
+==================================================
+TESTING REQUIREMENTS
+==================================================
+
+Create tests for:
+
+config
+
+doctor
+
+logger
+
+errors
+
+root command
+
+version command
+
+Requirements:
+
+Unit tests
+
+Integration tests where applicable
+
+==================================================
+TEST EXECUTION RULE
+==================================================
+
+Run tests.
+
+Fix failures.
+
+Run tests again.
+
+Run lint.
+
+Fix lint issues.
+
+Run lint again.
+
+Build project.
+
+Verify build.
+
+Build project again.
+
+Testing must happen twice.
+
+==================================================
+DOCUMENTATION
+==================================================
+
+Create:
+
+docs/getting-started.md
+
+docs/project-structure.md
+
+docs/configuration.md
+
+docs/development.md
+
+Update README.md
+
+README must include:
+
+Project overview
+
+Installation
+
+Commands
+
+Roadmap
+
+Contributing
+
+==================================================
+REPORTS
+==================================================
+
+Create:
+
+reports/phase1-report.md
+
+reports/testing-report.md
+
+reports/bug-report.md
+
+reports/implementation-summary.md
+
+Include:
+
+Tasks completed
+
+Files created
+
+Tests executed
+
+Bugs fixed
+
+Architecture decisions
+
+==================================================
+CODE QUALITY RULES
+==================================================
+
+Requirements:
+
+SOLID
+
+Clean Architecture
+
+Small packages
+
+Reusable code
+
+No dead code
+
+No unused imports
+
+No debug leftovers
+
+No temporary code
+
+Production ready only
+
+==================================================
+OPEN SOURCE RULES
+==================================================
+
+Create:
+
+CONTRIBUTING.md
+
+CODE_OF_CONDUCT.md
+
+LICENSE
+
+SECURITY.md
+
+Issue templates
+
+Pull request template
+
+GitHub labels documentation
+
+==================================================
+FINAL VERIFICATION
+==================================================
+
+Before phase completion:
+
+Verify:
+
+Build succeeds
+
+Tests pass
+
+Lint passes
+
+Documentation updated
+
+Reports generated
+
+No broken imports
+
+No compile errors
+
+No failing tests
+
+==================================================
+COMMIT RULES
+==================================================
+
+Review all changes.
+
+Generate detailed commit.
+
+Example:
+
+feat(core): initialize Builder foundation architecture and CLI framework
+
+==================================================
+PUSH RULES
+==================================================
+
+After successful verification:
+
+git add .
+
+git commit
+
+git push origin main
+
+Never push broken code.
+
+==================================================
+PHASE COMPLETION
+==================================================
+
+Create:
+
+reports/phase1-completion.md
+
+Include:
+
+Completed tasks
+
+Pending tasks
+
+Known limitations
+
+Recommendations for Phase 2
+
+Then commit and push.
+
+END OF PHASE 1
