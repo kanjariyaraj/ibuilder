@@ -34,8 +34,13 @@ type MobaiSettings struct {
 }
 
 type FlutterSettings struct {
-	Enabled bool   `json:"enabled"`
-	Channel string `json:"channel"`
+	Enabled     bool   `json:"enabled"`
+	Channel     string `json:"channel"`
+	Watch       bool   `json:"watch"`
+	HotReload   bool   `json:"hot_reload"`
+	DebounceMs  int    `json:"debounce_ms"`
+	AutoAttach  bool   `json:"auto_attach"`
+	AutoInstall bool   `json:"auto_install"`
 }
 
 type ReactNativeSettings struct {
@@ -113,8 +118,13 @@ func Default() *Config {
 			ConnectionTimeout: 30,
 		},
 		Flutter: FlutterSettings{
-			Enabled: false,
-			Channel: "stable",
+			Enabled:     false,
+			Channel:     "stable",
+			Watch:       true,
+			HotReload:   true,
+			DebounceMs:  500,
+			AutoAttach:  true,
+			AutoInstall: true,
 		},
 		ReactNative: ReactNativeSettings{
 			Enabled: false,

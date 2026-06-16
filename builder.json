@@ -40,7 +40,12 @@
   },
   "flutter": {
     "enabled": false,
-    "channel": "stable"
+    "channel": "stable",
+    "watch": true,
+    "hot_reload": true,
+    "debounce_ms": 500,
+    "auto_attach": true,
+    "auto_install": true
   },
   "react_native": {
     "enabled": false,
