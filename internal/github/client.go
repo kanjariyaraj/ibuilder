@@ -58,6 +58,36 @@ func (c *Client) Get(path string) ([]byte, error) {
 	return io.ReadAll(resp.Body)
 }
 
+func (c *Client) Put(path, body string) ([]byte, error) {
+	url := APIRoot + path
+	req, err := c.NewRequest("PUT", url, body)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := c.Do(req)
+	if err != nil {
+		return nil, errors.Wrap(errors.KindNetwork, fmt.Sprintf("API request failed: %s", path), err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode == 401 || resp.StatusCode == 403 {
+		return nil, errors.New(errors.KindPermission, "authentication failed or token lacks permissions")
+	}
+	if resp.StatusCode == 404 {
+		return nil, errors.New(errors.KindNotFound, "resource not found")
+	}
+	if resp.StatusCode == 409 {
+		return nil, errors.New(errors.KindNetwork, "conflict: resource already exists")
+	}
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		bodyBytes, _ := io.ReadAll(resp.Body)
+		return nil, errors.Wrap(errors.KindNetwork, fmt.Sprintf("API error (status %d)", resp.StatusCode), fmt.Errorf("%s", string(bodyBytes)))
+	}
+
+	return io.ReadAll(resp.Body)
+}
+
 func (c *Client) NewRequest(method, url, body string) (*http.Request, error) {
 	req, err := http.NewRequest(method, url, bytes.NewBufferString(body))
 	if err != nil {

@@ -24,13 +24,13 @@ type BuildOptions struct {
 }
 
 type BuildResult struct {
-	RunID      int64  `json:"run_id"`
-	RunNumber  int    `json:"run_number"`
-	Status     string `json:"status"`
-	Conclusion string `json:"conclusion"`
+	RunID       int64  `json:"run_id"`
+	RunNumber   int    `json:"run_number"`
+	Status      string `json:"status"`
+	Conclusion  string `json:"conclusion"`
 	WorkflowURL string `json:"workflow_url"`
-	Artifact   string `json:"artifact,omitempty"`
-	ReportPath string `json:"report_path,omitempty"`
+	Artifact    string `json:"artifact,omitempty"`
+	ReportPath  string `json:"report_path,omitempty"`
 }
 
 type BuildReport struct {
