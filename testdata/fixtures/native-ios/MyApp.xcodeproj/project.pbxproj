@@ -1,0 +1,15 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+/* Begin PBXNativeTarget section */
+		1A2B3C4D /* MyApp */ = {
+			isa = PBXNativeTarget;
+		};
+/* End PBXNativeTarget section */
+	};
+	rootObject = 1A2B3C4D /* Project object */;
+}

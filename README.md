@@ -41,14 +41,15 @@ go build -o builder ./cmd/builder/
 | `builder build list` | List recent builds |
 | `builder build log` | View build logs |
 | `builder build artifacts` | List build artifacts |
+| `builder init run` | Initialize project and generate config/workflow |
 
 ## Roadmap
 
 - **Phase 1** — Foundation & CLI framework (completed)
 - **Phase 2** — GitHub authentication & repository management (completed)
-- **Phase 3** — iOS build pipeline integration (current)
-- **Phase 4** — Signing & code signing management
-- **Phase 5** — Release automation & GitHub integration
+- **Phase 3** — iOS build pipeline integration (completed)
+- **Phase 4** — Initialization engine & workflow generator (current)
+- **Phase 5** — Remote iOS build engine
 
 ## Contributing
 

@@ -1,0 +1,7 @@
+{
+  "name": "myExpoApp",
+  "version": "1.0.0",
+  "dependencies": {
+    "expo": "50.0.0"
+  }
+}
