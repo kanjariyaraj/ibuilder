@@ -13,3 +13,9 @@ Thumbs.db
 
 # Dependencies
 vendor/
+
+# Build output
+dist/
+
+# Generated files
+cmd/builder/cmd/builder.json

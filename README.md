@@ -42,14 +42,15 @@ go build -o builder ./cmd/builder/
 | `builder build log` | View build logs |
 | `builder build artifacts` | List build artifacts |
 | `builder init run` | Initialize project and generate config/workflow |
+| `builder ios build` | Build iOS app remotely via GitHub Actions |
 
 ## Roadmap
 
 - **Phase 1** — Foundation & CLI framework (completed)
 - **Phase 2** — GitHub authentication & repository management (completed)
 - **Phase 3** — iOS build pipeline integration (completed)
-- **Phase 4** — Initialization engine & workflow generator (current)
-- **Phase 5** — Remote iOS build engine
+- **Phase 4** — Initialization engine & workflow generator (completed)
+- **Phase 5** — Remote iOS build engine (current)
 
 ## Contributing
 
