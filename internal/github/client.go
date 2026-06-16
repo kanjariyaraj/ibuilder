@@ -28,6 +28,10 @@ func (c *Client) Do(req *http.Request) (*http.Response, error) {
 	return c.httpClient.Do(req)
 }
 
+func (c *Client) AccessToken() string {
+	return c.token
+}
+
 func (c *Client) Get(path string) ([]byte, error) {
 	url := APIRoot + path
 	req, err := http.NewRequest("GET", url, nil)

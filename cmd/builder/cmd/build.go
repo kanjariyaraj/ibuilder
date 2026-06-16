@@ -3,8 +3,10 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"strconv"
+	"os/exec"
+	"runtime"
 
+	"github.com/kanjariyaraj/Builder/internal/artifacts"
 	"github.com/kanjariyaraj/Builder/internal/config"
 	"github.com/kanjariyaraj/Builder/internal/github"
 	"github.com/spf13/cobra"
@@ -12,254 +14,234 @@ import (
 
 var buildCmd = &cobra.Command{
 	Use:   "build",
-	Short: "Manage iOS builds",
-	Long:  "Trigger, monitor, and manage iOS builds via GitHub Actions.",
+	Short: "Manage builds",
+	Long:  "View build history, inspect builds, fetch logs, and open build URLs.",
 }
 
-var buildRunCmd = &cobra.Command{
-	Use:   "run [workflow-id]",
-	Short: "Trigger an iOS build workflow",
-	Args:  cobra.ExactArgs(1),
+var buildHistoryCmd = &cobra.Command{
+	Use:   "history",
+	Short: "Show build history",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		tokenData, err := github.LoadToken()
 		if err != nil || tokenData == nil {
-			return fmt.Errorf("not authenticated. Run 'builder auth github' first")
+			return fmt.Errorf("not authenticated")
 		}
 
-		path := cfgFile
-		if path == "" {
+		cfgPath := cfgFile
+		if cfgPath == "" {
 			cwd, _ := os.Getwd()
-			path = cwd + "/builder.json"
+			cfgPath = cwd + "/builder.json"
 		}
-
-		cfg, err := config.Load(path)
+		cfg, err := config.Load(cfgPath)
 		if err != nil {
 			return err
 		}
 
-		if cfg.Repo.Owner == "" || cfg.Repo.Name == "" {
-			return fmt.Errorf("no repository configured. Run 'builder repo connect' first")
-		}
+		client := github.NewClient(tokenData.AccessToken)
+		mgr := artifacts.NewArtifactManager(client, cfg.Repo.Owner, cfg.Repo.Name)
 
-		workflowID := args[0]
 		branch, _ := cmd.Flags().GetString("branch")
-		if branch == "" {
-			branch = cfg.Repo.Branch
-		}
-
-		scheme, _ := cmd.Flags().GetString("scheme")
-		mode, _ := cmd.Flags().GetString("mode")
-
-		inputs := make(map[string]string)
-		if scheme != "" {
-			inputs["scheme"] = scheme
-		}
-		if mode != "" {
-			inputs["build_mode"] = mode
-		}
-
-		client := github.NewClient(tokenData.AccessToken)
-		if err := github.DispatchWorkflow(client, cfg.Repo.Owner, cfg.Repo.Name, workflowID, branch, inputs); err != nil {
-			return fmt.Errorf("failed to trigger build: %w", err)
-		}
-
-		fmt.Printf("Build triggered! Workflow: %s, Branch: %s\n", workflowID, branch)
-		fmt.Println("Use 'builder build list' to check build status.")
-		return nil
-	},
-}
-
-var buildStatusCmd = &cobra.Command{
-	Use:   "status [run-id]",
-	Short: "Check build status",
-	Args:  cobra.ExactArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
-		tokenData, err := github.LoadToken()
-		if err != nil || tokenData == nil {
-			return fmt.Errorf("not authenticated. Run 'builder auth github' first")
-		}
-
-		path := cfgFile
-		if path == "" {
-			cwd, _ := os.Getwd()
-			path = cwd + "/builder.json"
-		}
-
-		cfg, err := config.Load(path)
-		if err != nil {
-			return err
-		}
-
-		runID, err := strconv.ParseInt(args[0], 10, 64)
-		if err != nil {
-			return fmt.Errorf("invalid run ID: %s", args[0])
-		}
-
-		client := github.NewClient(tokenData.AccessToken)
-		run, err := github.GetWorkflowRun(client, cfg.Repo.Owner, cfg.Repo.Name, runID)
-		if err != nil {
-			return fmt.Errorf("failed to get build status: %w", err)
-		}
-
-		fmt.Printf("Build #%d\n", run.RunNumber)
-		fmt.Printf("Status:      %s\n", run.Status)
-		fmt.Printf("Conclusion:  %s\n", run.Conclusion)
-		fmt.Printf("Branch:      %s\n", run.HeadBranch)
-		fmt.Printf("Created:     %s\n", run.CreatedAt.Format("Jan 2, 2006 15:04:05"))
-		fmt.Printf("Updated:     %s\n", run.UpdatedAt.Format("Jan 2, 2006 15:04:05"))
-		fmt.Printf("URL:         %s\n", run.HTMLURL)
-
-		return nil
-	},
-}
-
-var buildListCmd = &cobra.Command{
-	Use:   "list",
-	Short: "List recent builds",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		tokenData, err := github.LoadToken()
-		if err != nil || tokenData == nil {
-			return fmt.Errorf("not authenticated. Run 'builder auth github' first")
-		}
-
-		path := cfgFile
-		if path == "" {
-			cwd, _ := os.Getwd()
-			path = cwd + "/builder.json"
-		}
-
-		cfg, err := config.Load(path)
-		if err != nil {
-			return err
-		}
-
+		workflow, _ := cmd.Flags().GetString("workflow")
+		status, _ := cmd.Flags().GetString("status")
 		limit, _ := cmd.Flags().GetInt("limit")
-		if limit <= 0 {
-			limit = 10
-		}
+		page, _ := cmd.Flags().GetInt("page")
+		asJSON, _ := cmd.Flags().GetBool("json")
 
-		client := github.NewClient(tokenData.AccessToken)
-		runs, err := github.ListWorkflowRuns(client, cfg.Repo.Owner, cfg.Repo.Name, limit)
+		records, err := mgr.GetHistory(&artifacts.HistoryOptions{
+			Branch:   branch,
+			Workflow: workflow,
+			Status:   status,
+			Limit:    limit,
+			Page:     page,
+			JSON:     asJSON,
+		})
 		if err != nil {
-			return fmt.Errorf("failed to list builds: %w", err)
+			return fmt.Errorf("failed to get build history: %w", err)
 		}
 
-		if len(runs) == 0 {
-			fmt.Println("No builds found.")
+		if asJSON {
+			return printJSON(records)
+		}
+
+		if len(records) == 0 {
+			fmt.Println("No build history found.")
 			return nil
 		}
 
-		fmt.Printf("Recent builds (last %d):\n", limit)
-		fmt.Println()
-		for _, run := range runs {
-			status := run.Status
-			if run.Conclusion != "" && run.Conclusion != "null" {
-				status = run.Conclusion
+		fmt.Printf("%-6s %-10s %-12s %-20s %-10s\n", "#", "Status", "Conclusion", "Branch", "Duration")
+		for _, r := range records {
+			fmt.Printf("%-6d %-10s %-12s %-20s %-10s\n", r.RunNumber, r.Status, r.Conclusion, r.Branch, r.Duration)
+		}
+		return nil
+	},
+}
+
+var buildInspectCmd = &cobra.Command{
+	Use:   "inspect",
+	Short: "Inspect a build",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		runID, _ := cmd.Flags().GetInt64("run-id")
+		if runID == 0 {
+			return fmt.Errorf("--run-id is required")
+		}
+
+		tokenData, err := github.LoadToken()
+		if err != nil || tokenData == nil {
+			return fmt.Errorf("not authenticated")
+		}
+
+		cfgPath := cfgFile
+		if cfgPath == "" {
+			cwd, _ := os.Getwd()
+			cfgPath = cwd + "/builder.json"
+		}
+		cfg, err := config.Load(cfgPath)
+		if err != nil {
+			return err
+		}
+
+		client := github.NewClient(tokenData.AccessToken)
+		mgr := artifacts.NewArtifactManager(client, cfg.Repo.Owner, cfg.Repo.Name)
+
+		inspect, err := mgr.InspectBuild(runID)
+		if err != nil {
+			return fmt.Errorf("failed to inspect build: %w", err)
+		}
+
+		fmt.Printf("Build #%d\n", inspect.RunNumber)
+		fmt.Printf("Status:     %s\n", inspect.Status)
+		fmt.Printf("Conclusion: %s\n", inspect.Conclusion)
+		fmt.Printf("Branch:     %s\n", inspect.Branch)
+		fmt.Printf("Commit:     %s\n", inspect.CommitSHA)
+		fmt.Printf("Author:     %s\n", inspect.Author)
+		fmt.Printf("Workflow:   %s\n", inspect.Workflow)
+		fmt.Printf("Duration:   %s\n", inspect.Duration)
+		fmt.Printf("URL:        %s\n", inspect.URL)
+
+		if len(inspect.Artifacts) > 0 {
+			fmt.Println("\nArtifacts:")
+			for _, a := range inspect.Artifacts {
+				fmt.Printf("  - %s (%d bytes)\n", a.Name, a.Size)
 			}
-			fmt.Printf("  #%-5d %-12s %s\n", run.RunNumber, status, run.CreatedAt.Format("Jan 2 15:04"))
 		}
 
+		if len(inspect.Jobs) > 0 {
+			fmt.Println("\nJobs:")
+			for _, j := range inspect.Jobs {
+				fmt.Printf("  - %s [%s/%s] (%d steps)\n", j.Name, j.Status, j.Conclusion, j.Steps)
+			}
+		}
 		return nil
 	},
 }
 
-var buildLogCmd = &cobra.Command{
-	Use:   "log [run-id]",
-	Short: "View build logs",
-	Args:  cobra.ExactArgs(1),
+var buildLogsCmd = &cobra.Command{
+	Use:   "logs",
+	Short: "Fetch build logs",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		tokenData, err := github.LoadToken()
 		if err != nil || tokenData == nil {
-			return fmt.Errorf("not authenticated. Run 'builder auth github' first")
+			return fmt.Errorf("not authenticated")
 		}
 
-		path := cfgFile
-		if path == "" {
+		cfgPath := cfgFile
+		if cfgPath == "" {
 			cwd, _ := os.Getwd()
-			path = cwd + "/builder.json"
+			cfgPath = cwd + "/builder.json"
 		}
-
-		cfg, err := config.Load(path)
+		cfg, err := config.Load(cfgPath)
 		if err != nil {
 			return err
 		}
 
-		runID, err := strconv.ParseInt(args[0], 10, 64)
-		if err != nil {
-			return fmt.Errorf("invalid run ID: %s", args[0])
-		}
-
 		client := github.NewClient(tokenData.AccessToken)
-		run, err := github.GetWorkflowRun(client, cfg.Repo.Owner, cfg.Repo.Name, runID)
+		mgr := artifacts.NewArtifactManager(client, cfg.Repo.Owner, cfg.Repo.Name)
+
+		runID, _ := cmd.Flags().GetInt64("run-id")
+		latest, _ := cmd.Flags().GetBool("latest")
+		savePath, _ := cmd.Flags().GetString("save")
+
+		logPath, err := mgr.FetchLogs(&artifacts.LogsOptions{
+			RunID:    runID,
+			Latest:   latest,
+			SavePath: savePath,
+		})
 		if err != nil {
-			return fmt.Errorf("failed to get build: %w", err)
+			return fmt.Errorf("failed to fetch logs: %w", err)
 		}
 
-		fmt.Printf("Build #%d - %s (%s)\n", run.RunNumber, run.Status, run.Conclusion)
-		fmt.Printf("URL: %s\n", run.HTMLURL)
-		fmt.Println()
-		fmt.Println("Use the URL above to view detailed logs in GitHub.")
+		fmt.Printf("Logs saved to: %s\n", logPath)
 		return nil
 	},
 }
 
-var buildArtifactsCmd = &cobra.Command{
-	Use:   "artifacts [run-id]",
-	Short: "List build artifacts",
-	Args:  cobra.ExactArgs(1),
+var buildOpenCmd = &cobra.Command{
+	Use:   "open",
+	Short: "Open build URL in browser",
 	RunE: func(cmd *cobra.Command, args []string) error {
+		runID, _ := cmd.Flags().GetInt64("run-id")
+		if runID == 0 {
+			return fmt.Errorf("--run-id is required")
+		}
+
 		tokenData, err := github.LoadToken()
 		if err != nil || tokenData == nil {
-			return fmt.Errorf("not authenticated. Run 'builder auth github' first")
+			return fmt.Errorf("not authenticated")
 		}
 
-		path := cfgFile
-		if path == "" {
+		cfgPath := cfgFile
+		if cfgPath == "" {
 			cwd, _ := os.Getwd()
-			path = cwd + "/builder.json"
+			cfgPath = cwd + "/builder.json"
 		}
-
-		cfg, err := config.Load(path)
+		cfg, err := config.Load(cfgPath)
 		if err != nil {
 			return err
 		}
 
-		runID, err := strconv.ParseInt(args[0], 10, 64)
-		if err != nil {
-			return fmt.Errorf("invalid run ID: %s", args[0])
-		}
-
 		client := github.NewClient(tokenData.AccessToken)
-		artifacts, err := github.ListArtifacts(client, cfg.Repo.Owner, cfg.Repo.Name, runID)
+		mgr := artifacts.NewArtifactManager(client, cfg.Repo.Owner, cfg.Repo.Name)
+
+		url, err := mgr.OpenBuildURL(runID)
 		if err != nil {
-			return fmt.Errorf("failed to list artifacts: %w", err)
+			return fmt.Errorf("failed to get build URL: %w", err)
 		}
 
-		if len(artifacts) == 0 {
-			fmt.Println("No artifacts found for this build.")
-			return nil
+		fmt.Printf("Opening: %s\n", url)
+
+		var cmd2 *exec.Cmd
+		switch runtime.GOOS {
+		case "darwin":
+			cmd2 = exec.Command("open", url)
+		case "linux":
+			cmd2 = exec.Command("xdg-open", url)
+		case "windows":
+			cmd2 = exec.Command("cmd", "/c", "start", url)
+		default:
+			return fmt.Errorf("unsupported OS for opening browser")
 		}
 
-		fmt.Println("Build Artifacts:")
-		for _, a := range artifacts {
-			size := float64(a.Size) / 1024
-			fmt.Printf("  %s (%.1f KB)\n", a.Name, size)
-		}
-
-		return nil
+		return cmd2.Start()
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(buildCmd)
-	buildCmd.AddCommand(buildRunCmd)
-	buildCmd.AddCommand(buildStatusCmd)
-	buildCmd.AddCommand(buildListCmd)
-	buildCmd.AddCommand(buildLogCmd)
-	buildCmd.AddCommand(buildArtifactsCmd)
+	buildCmd.AddCommand(buildHistoryCmd)
+	buildCmd.AddCommand(buildInspectCmd)
+	buildCmd.AddCommand(buildLogsCmd)
+	buildCmd.AddCommand(buildOpenCmd)
 
-	buildRunCmd.Flags().String("branch", "", "Branch to build from")
-	buildRunCmd.Flags().String("scheme", "", "Xcode scheme (for Xcode builds)")
-	buildRunCmd.Flags().String("mode", "release", "Build mode (debug/release)")
-	buildListCmd.Flags().Int("limit", 10, "Number of builds to show")
+	buildHistoryCmd.Flags().String("branch", "", "Filter by branch")
+	buildHistoryCmd.Flags().String("workflow", "", "Filter by workflow")
+	buildHistoryCmd.Flags().String("status", "", "Filter by status")
+	buildHistoryCmd.Flags().Int("limit", 30, "Number of builds")
+	buildHistoryCmd.Flags().Int("page", 1, "Page number")
+	buildHistoryCmd.Flags().Bool("json", false, "JSON output")
+
+	buildInspectCmd.Flags().Int64("run-id", 0, "Build run ID")
+	buildLogsCmd.Flags().Int64("run-id", 0, "Build run ID")
+	buildLogsCmd.Flags().Bool("latest", false, "Latest build logs")
+	buildLogsCmd.Flags().String("save", "", "Save path for logs")
+	buildOpenCmd.Flags().Int64("run-id", 0, "Build run ID")
 }
