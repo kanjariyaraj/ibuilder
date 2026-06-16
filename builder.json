@@ -63,8 +63,11 @@
     "fast_refresh": true
   },
   "release": {
+    "mode": "beta",
     "auto_notes": true,
     "default_group": "",
-    "validate_before_upload": true
+    "validate_before_upload": true,
+    "create_github_release": true,
+    "notifications": false
   }
 }

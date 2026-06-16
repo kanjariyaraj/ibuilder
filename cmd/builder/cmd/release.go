@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/kanjariyaraj/Builder/internal/logger"
 	"github.com/kanjariyaraj/Builder/internal/release"
+	"github.com/kanjariyaraj/Builder/internal/releasepipeline"
 	"github.com/spf13/cobra"
 )
 
@@ -194,10 +196,121 @@ var testflightTestersCmd = &cobra.Command{
 	},
 }
 
+func getPipelineSession() *releasepipeline.Pipeline {
+	log := logger.New(logger.LevelInfo)
+	p := releasepipeline.NewPipeline(log)
+	cwd, _ := os.Getwd()
+	if cfgFile != "" {
+		p.SetProjectDir(filepath.Dir(cfgFile))
+	} else {
+		p.SetProjectDir(cwd)
+	}
+	return p
+}
+
 var releaseCmd = &cobra.Command{
 	Use:   "release",
-	Short: "Release management commands",
-	Long:  "Generate release notes, track history, and prepare releases.",
+	Short: "One-command release pipeline",
+	Long: `Execute the complete release pipeline:
+validate → build → sign → notes → upload → github release → report`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		p := getPipelineSession()
+		started := time.Now()
+
+		beta, _ := cmd.Flags().GetBool("beta")
+		production, _ := cmd.Flags().GetBool("production")
+		dryRun, _ := cmd.Flags().GetBool("dry-run")
+		notesOnly, _ := cmd.Flags().GetBool("notes")
+		jsonOut, _ := cmd.Flags().GetBool("json")
+
+		mode := releasepipeline.ModeBeta
+		if production {
+			mode = releasepipeline.ModeProduction
+		}
+		if !beta && !production {
+			mode = releasepipeline.ModeBeta
+		}
+
+		p.SetMode(mode)
+		p.SetDryRun(dryRun)
+		p.StartStatus()
+		defer p.FinishStatus()
+
+		fmt.Printf("Starting %s release pipeline...\n", mode)
+		if dryRun {
+			fmt.Println("DRY RUN — no changes will be made")
+		}
+		fmt.Println()
+
+		stages := []struct {
+			name string
+			fn   func() *releasepipeline.StageResult
+		}{
+			{"validate", p.Validate},
+			{"build", p.Build},
+			{"sign", p.Sign},
+			{"notes", p.GenerateNotes},
+			{"upload", p.Upload},
+			{"github release", p.CreateGitHubRelease},
+			{"report", func() *releasepipeline.StageResult { return p.GenerateReport(started) }},
+		}
+
+		if notesOnly {
+			stages = []struct {
+				name string
+				fn   func() *releasepipeline.StageResult
+			}{{name: "notes", fn: p.GenerateNotes}}
+		}
+
+		for i, s := range stages {
+			p.UpdateStatus(releasepipeline.PipelineStage(s.name), fmt.Sprintf("stage %d/%d", i+1, len(stages)))
+			fmt.Printf("[%d/%d] %s... ", i+1, len(stages), s.name)
+			result := s.fn()
+			if result.Success {
+				fmt.Println("✓")
+			} else {
+				fmt.Println("✗")
+				fmt.Printf("  Error: %s\n", result.Message)
+				if result.Error != "" {
+					fmt.Printf("  Details: %s\n", result.Error)
+				}
+			}
+		}
+
+		fmt.Println()
+
+		if notesOnly {
+			p.GenerateReport(started)
+		}
+
+		fmt.Println("Pipeline stages:")
+		for _, r := range p.Results() {
+			icon := "✓"
+			if !r.Success {
+				icon = "✗"
+			}
+			fmt.Printf("  %s %s — %s\n", icon, r.Stage, r.Message)
+		}
+
+		fmt.Println()
+		if !dryRun {
+			fmt.Printf("Release mode: %s\n", mode)
+			if jsonOut {
+				fmt.Println("JSON output requested (TODO: implement structured output)")
+			}
+		}
+
+		return nil
+	},
+}
+
+var releaseStatusCmd = &cobra.Command{
+	Use:   "status",
+	Short: "Show current release pipeline status",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println(releasepipeline.StatusSummary())
+		return nil
+	},
 }
 
 var releaseNotesCmd = &cobra.Command{
@@ -330,9 +443,16 @@ func init() {
 	testflightCmd.AddCommand(testflightTestersCmd)
 
 	rootCmd.AddCommand(releaseCmd)
+	releaseCmd.AddCommand(releaseStatusCmd)
 	releaseCmd.AddCommand(releaseNotesCmd)
 	releaseCmd.AddCommand(releaseHistoryCmd)
 	releaseCmd.AddCommand(releasePrepareCmd)
+
+	releaseCmd.Flags().Bool("beta", false, "Beta release mode")
+	releaseCmd.Flags().Bool("production", false, "Production release mode")
+	releaseCmd.Flags().Bool("dry-run", false, "Preview release without changes")
+	releaseCmd.Flags().Bool("notes", false, "Generate release notes only")
+	releaseCmd.Flags().Bool("json", false, "Output in JSON format")
 
 	testflightUploadCmd.Flags().String("artifact", "", "Path to IPA artifact")
 	testflightUploadCmd.Flags().String("build", "", "Build number to upload")

@@ -61,9 +61,12 @@ type ReactNativeSettings struct {
 }
 
 type ReleaseSettings struct {
-	AutoNotes          bool   `json:"auto_notes"`
-	DefaultGroup       string `json:"default_group"`
-	ValidateBeforeUpload bool `json:"validate_before_upload"`
+	Mode                 string `json:"mode"`
+	AutoNotes            bool   `json:"auto_notes"`
+	DefaultGroup         string `json:"default_group"`
+	ValidateBeforeUpload bool   `json:"validate_before_upload"`
+	CreateGitHubRelease  bool   `json:"create_github_release"`
+	Notifications        bool   `json:"notifications"`
 }
 
 type RepoConfig struct {
@@ -144,9 +147,12 @@ func Default() *Config {
 			ConfidenceThreshold: 0.8,
 		},
 		Release: ReleaseSettings{
+			Mode:                 "beta",
 			AutoNotes:            true,
 			DefaultGroup:         "",
 			ValidateBeforeUpload: true,
+			CreateGitHubRelease:  true,
+			Notifications:        false,
 		},
 		Flutter: FlutterSettings{
 			Enabled:     false,

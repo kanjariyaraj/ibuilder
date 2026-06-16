@@ -19,3 +19,6 @@ dist/
 
 # Generated files
 cmd/builder/cmd/builder.json
+
+# Build output
+.build/
