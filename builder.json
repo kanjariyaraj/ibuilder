@@ -38,6 +38,12 @@
     "auto_reconnect": true,
     "connection_timeout": 30
   },
+  "ai": {
+    "enabled": true,
+    "auto_fix": false,
+    "report_format": "markdown",
+    "confidence_threshold": 0.8
+  },
   "flutter": {
     "enabled": false,
     "channel": "stable",
@@ -55,5 +61,10 @@
     "auto_attach": true,
     "auto_install": true,
     "fast_refresh": true
+  },
+  "release": {
+    "auto_notes": true,
+    "default_group": "",
+    "validate_before_upload": true
   }
 }

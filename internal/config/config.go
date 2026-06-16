@@ -60,6 +60,12 @@ type ReactNativeSettings struct {
 	FastRefresh    bool   `json:"fast_refresh"`
 }
 
+type ReleaseSettings struct {
+	AutoNotes          bool   `json:"auto_notes"`
+	DefaultGroup       string `json:"default_group"`
+	ValidateBeforeUpload bool `json:"validate_before_upload"`
+}
+
 type RepoConfig struct {
 	Owner  string `json:"owner"`
 	Name   string `json:"name"`
@@ -90,6 +96,7 @@ type Config struct {
 	MobAI           MobAISettings       `json:"mob_ai"`
 	Mobai           MobaiSettings       `json:"mobai"`
 	AI              AISettings          `json:"ai"`
+	Release         ReleaseSettings     `json:"release"`
 	Flutter         FlutterSettings     `json:"flutter"`
 	ReactNative     ReactNativeSettings `json:"react_native"`
 }
@@ -135,6 +142,11 @@ func Default() *Config {
 			AutoFix:             false,
 			ReportFormat:        "markdown",
 			ConfidenceThreshold: 0.8,
+		},
+		Release: ReleaseSettings{
+			AutoNotes:            true,
+			DefaultGroup:         "",
+			ValidateBeforeUpload: true,
 		},
 		Flutter: FlutterSettings{
 			Enabled:     false,
