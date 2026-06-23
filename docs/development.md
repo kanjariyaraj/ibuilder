@@ -7,7 +7,7 @@
 ## Setup
 
 ```bash
-git clone https://github.com/kanjariyaraj/Builder.git
+git clone https://github.com/kanjariyaraj/iBuilder.git
 cd Builder
 go mod tidy
 ```
